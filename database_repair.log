@@ -1,0 +1,47 @@
+[15:48:22 INFO]: RepairTool will try to diagnose the issue, please wait for the command line to close.
+[15:48:22 INFO]: Checking database...
+[15:48:22 INFO]: Database found.
+[15:48:22 INFO]: Connected to the database.
+[15:48:22 INFO]: Table "PURCHASES" found. Checking columns...
+[15:48:22 INFO]: Table "PURCHASES" OK.
+[23:29:52 INFO]: RepairTool will try to diagnose the issue, please wait for the command line to close.
+[23:29:52 INFO]: Checking database...
+[23:29:52 SEVERE]: Database check failed: 
+[23:29:52 INFO]: Database missing, creating...
+[23:29:52 SEVERE]: Database check failed: 
+[23:29:52 SEVERE]: Database connection refused: 
+[23:32:23 INFO]: RepairTool will try to diagnose the issue, please wait for the command line to close.
+[23:32:23 INFO]: Checking database...
+[23:32:23 SEVERE]: Database check failed: Access denied for user 'root'@'localhost' (using password: YES)
+[23:32:23 INFO]: Database missing, creating...
+[23:32:23 SEVERE]: Database check failed: Access denied for user 'root'@'localhost' (using password: YES)
+[23:32:23 SEVERE]: Database connection refused: Access denied for user 'root'@'localhost' (using password: YES)
+[23:32:57 INFO]: RepairTool will try to diagnose the issue, please wait for the command line to close.
+[23:32:57 INFO]: Checking database...
+[23:32:58 INFO]: Database missing, creating...
+[23:32:58 INFO]: Database created.
+[23:32:58 INFO]: Connected to the database.
+[23:32:58 INFO]: Added missing column "purchase_id" to table "PURCHASES".
+[23:32:58 INFO]: Added missing column "product_id" to table "PURCHASES".
+[23:32:58 INFO]: Added missing column "price" to table "PURCHASES".
+[23:32:58 INFO]: Added missing column "quantity" to table "PURCHASES".
+[23:32:58 INFO]: Table "PURCHASES" created.
+[23:32:58 INFO]: Added missing column "time" to table "RECEIPTS".
+[23:32:58 INFO]: Added missing column "receipt_id" to table "RECEIPTS".
+[23:32:58 INFO]: Added missing column "customer_id" to table "RECEIPTS".
+[23:32:58 INFO]: Added missing column "employee_id" to table "RECEIPTS".
+[23:32:58 INFO]: Added missing column "subtotal" to table "RECEIPTS".
+[23:32:58 INFO]: Added missing column "discount_nr" to table "RECEIPTS".
+[23:32:58 INFO]: Added missing column "total" to table "RECEIPTS".
+[23:32:58 INFO]: Added missing column "cash_payment" to table "RECEIPTS".
+[23:32:58 INFO]: Added missing column "card_payments" to table "RECEIPTS".
+[23:32:58 INFO]: Added missing column "gift_payments" to table "RECEIPTS".
+[23:32:58 INFO]: Table "RECEIPTS" created.
+[23:32:58 INFO]: Added missing column "time" to table "TRANSACTIONS".
+[23:32:58 INFO]: Added missing column "transaction_id" to table "TRANSACTIONS".
+[23:32:58 INFO]: Added missing column "employee_id" to table "TRANSACTIONS".
+[23:32:58 INFO]: Added missing column "type" to table "TRANSACTIONS".
+[23:32:58 INFO]: Added missing column "transaction" to table "TRANSACTIONS".
+[23:32:58 INFO]: Added missing column "total" to table "TRANSACTIONS".
+[23:32:58 INFO]: Added missing column "register" to table "TRANSACTIONS".
+[23:32:58 INFO]: Table "TRANSACTIONS" created.

@@ -12,9 +12,9 @@ public class DatabaseConnection {
 	private Connection _connection;
 
 	public DatabaseConnection(String username, String password) throws ConnectionException {
-		System.out.println(RepairTool.run(username, password));
+		//System.out.println(RepairTool.run(username, password));
 		
-		if(password == "") { //TODO: Remove after testing repair tool is complete
+		//if(password == "") { //TODO: Remove after testing repair tool is complete
 			try {
 				establishDatabaseConnection(username, password);
 			} catch(SQLException e) {
@@ -22,7 +22,7 @@ public class DatabaseConnection {
 			}
 
 			Database.setConnection(this);
-		}
+		//}
 	}
 
 	public boolean close() {

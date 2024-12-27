@@ -43,50 +43,45 @@ public class ManagementPage implements Page {
 		int height = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 
 		_jPanel.setGradient(new Gradient(0, 0, width, height, Color.decode("#0860C4"), Color.decode("#d5418f")));
+		_jPanel.setLayout(null);
+		
 		keyboardPanel.setOpaque(false);
-		keyboardPanel.setSize(width, height);
+		keyboardPanel.add(numpad.getJPane());
 
-		GridBagConstraints constraints = new GridBagConstraints();
-		constraints.insets = new Insets(5, 5, 5, 5);
-		constraints.gridx = 0;
-
+		int codeWidth = numpad.getWidth() - 20, codeHeight = 50;
 		productCodeField = new JTextField("Product code");
-		productCodeField.setPreferredSize(new Dimension(400, 50));
+		productCodeField.setPreferredSize(new Dimension(codeWidth, codeHeight));
 		productCodeField.setFont(_defaultFont);
 		productCodeField.setForeground(Color.WHITE);
 		productCodeField.setMargin(new Insets(0, 10, 0, 0));
 		productCodeField.setHintTextColor(new Color(237, 237, 237, 200));
 		productCodeField.setCornerRadius(10);
 		productCodeField.setBorderColor(new Color(0xEF4550));
+		productCodeField.setBounds(width - codeWidth - 10, 10, codeWidth, codeHeight);
 		productCodeField.addActionListener((ActionEvent e) -> {
 			searchProduct();
 		});
 
-		constraints.gridy = 0;
-		_jPanel.add(productCodeField, constraints);
+		_jPanel.add(productCodeField);
+		
+		keyboardPanel.setBounds(width - numpad.getWidth(), codeHeight + 10, numpad.getWidth(), numpad.getHeight());
 
-		signoutButton.setPreferredSize(new Dimension(400, 50));
+		int signoutWidth = numpad.getWidth() - 20, signoutHeight = 50;
+		signoutButton.setPreferredSize(new Dimension(signoutWidth, signoutHeight));
 		signoutButton.setFont(_defaultFont);
 		signoutButton.setFocusPainted(false);
 		signoutButton.setForeground(Color.WHITE);
 		signoutButton.setColor(new Color(237, 237, 237, 150));
 		signoutButton.setArmedColor(new Color(237, 237, 237, 200));
-
+		signoutButton.setBounds(width - signoutWidth - 10, height - signoutHeight - 10, signoutWidth, signoutHeight);
 		signoutButton.addActionListener(signOut());
 		
-		
-		keyboardPanel.add(numpad.getJPane(), constraints);
 		numpad.addKeyboardListener((keyEvent) -> {
 			numpadKeyPressHandle(keyEvent.getPressedKey().toString());
 		});
 
-		
-		
-		//constraints.gridy++;
-		//_jPanel.add(signoutButton);
-		
-		constraints.gridy = 1;
-		_jPanel.add(keyboardPanel, constraints);
+		_jPanel.add(signoutButton);
+		_jPanel.add(keyboardPanel);
 	}
 	
 	private void numpadKeyPressHandle(String keyString) {

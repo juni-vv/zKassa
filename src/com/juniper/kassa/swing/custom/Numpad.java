@@ -86,6 +86,14 @@ public class Numpad {
 	public JPanel getJPane() {
 		return keyboardPane;
 	}
+	
+	public int getWidth() {
+		return 125 * 4 + 10 * 5;
+	}
+	
+	public int getHeight() {
+		return 85 * 4 + 10 * 5;
+	}
 
 	public void addKeyboardListener(KeyboardListener keyboardListener) {
 		keyboardListeners.add(keyboardListener);

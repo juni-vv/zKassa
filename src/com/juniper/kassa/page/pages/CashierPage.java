@@ -2,14 +2,10 @@ package com.juniper.kassa.page.pages;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.NumberFormat;
-import java.util.Locale;
 
 import com.juniper.kassa.database.Database;
 import com.juniper.kassa.page.Page;
@@ -17,12 +13,11 @@ import com.juniper.kassa.page.PageHandler;
 import com.juniper.kassa.swing.JButton;
 import com.juniper.kassa.swing.JPanel;
 import com.juniper.kassa.swing.JTextField;
-import com.juniper.kassa.swing.custom.FontManager;
 import com.juniper.kassa.swing.custom.Gradient;
 import com.juniper.kassa.swing.custom.Numpad;
 
-public class ManagementPage implements Page {
-
+public class CashierPage implements Page {
+	
 	private JPanel _jPanel;
 
 	private JPanel keyboardPanel = new JPanel();
@@ -39,7 +34,6 @@ public class ManagementPage implements Page {
 		_jPanel.setGradient(new Gradient(0, 0, width, height, Color.decode("#0860C4"), Color.decode("#d5418f")));
 		_jPanel.setLayout(null);
 		
-		keyboardPanel.setOpaque(false);
 		keyboardPanel.add(numpad.getJPanel());
 
 		int codeWidth = numpad.getWidth() - 20, codeHeight = 50;
@@ -80,7 +74,6 @@ public class ManagementPage implements Page {
 	
 	private void numpadKeyPressHandle(String keyString) {
 		String key = keyString.split("_")[1];
-		System.out.println(key);
 		
 		if(key.equalsIgnoreCase("backspace")) {
 			if(productCodeField.getText().length() > 0)

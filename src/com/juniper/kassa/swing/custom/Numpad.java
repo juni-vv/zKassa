@@ -17,11 +17,11 @@ public class Numpad {
 
 	private final JButton jb_00, jb_0, jb_1, jb_2, jb_3, jb_4, jb_5, jb_6, jb_7, jb_8, jb_9, jb_backspace, jb_enter;
 
-	private JPanel                 keyboardPane      = new JPanel(new GridBagLayout());
+	private JPanel                 keyboardPanel      = new JPanel(new GridBagLayout());
 	private List<KeyboardListener> keyboardListeners = new ArrayList<KeyboardListener>();
 
 	public Numpad(int cornerRadius) {
-		keyboardPane.setOpaque(false);
+		keyboardPanel.setOpaque(false);
 		
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.insets = new Insets(5, 5, 5, 5);
@@ -43,48 +43,48 @@ public class Numpad {
 		constraints.gridy = 0;
 
 		constraints.gridx = 0;
-		keyboardPane.add(jb_7, constraints);
+		keyboardPanel.add(jb_7, constraints);
 		constraints.gridx = 1;
-		keyboardPane.add(jb_8, constraints);
+		keyboardPanel.add(jb_8, constraints);
 		constraints.gridx = 2;
-		keyboardPane.add(jb_9, constraints);
+		keyboardPanel.add(jb_9, constraints);
 
 		constraints.gridy = 1;
 
 		constraints.gridx = 0;
-		keyboardPane.add(jb_4, constraints);
+		keyboardPanel.add(jb_4, constraints);
 		constraints.gridx = 1;
-		keyboardPane.add(jb_5, constraints);
+		keyboardPanel.add(jb_5, constraints);
 		constraints.gridx = 2;
-		keyboardPane.add(jb_6, constraints);
+		keyboardPanel.add(jb_6, constraints);
 		
 		constraints.gridy = 2;
 
 		constraints.gridx = 0;
-		keyboardPane.add(jb_1, constraints);
+		keyboardPanel.add(jb_1, constraints);
 		constraints.gridx = 1;
-		keyboardPane.add(jb_2, constraints);
+		keyboardPanel.add(jb_2, constraints);
 		constraints.gridx = 2;
-		keyboardPane.add(jb_3, constraints);
+		keyboardPanel.add(jb_3, constraints);
 		
 		constraints.gridy = 3;
 
 		constraints.gridx = 0;
-		keyboardPane.add(jb_backspace, constraints);
+		keyboardPanel.add(jb_backspace, constraints);
 		constraints.gridx = 1;
-		keyboardPane.add(jb_0, constraints);
+		keyboardPanel.add(jb_0, constraints);
 		constraints.gridx = 2;
-		keyboardPane.add(jb_00, constraints);
+		keyboardPanel.add(jb_00, constraints);
 		
 		constraints.gridx = 3;
 		constraints.gridy = 0;
 		constraints.gridheight = 4;
 		jb_enter.setPreferredSize(new Dimension(125, 85 * 4 + 10 * 3));
-		keyboardPane.add(jb_enter, constraints);
+		keyboardPanel.add(jb_enter, constraints);
 	}
 	
-	public JPanel getJPane() {
-		return keyboardPane;
+	public JPanel getJPanel() {
+		return keyboardPanel;
 	}
 	
 	public int getWidth() {
@@ -100,11 +100,11 @@ public class Numpad {
 	}
 
 	public void addTo(JComponent jComponent, GridBagConstraints constraints) {
-		jComponent.add(keyboardPane, constraints);
+		jComponent.add(keyboardPanel, constraints);
 	}
 
 	public void addTo(JComponent jComponent) {
-		jComponent.add(keyboardPane);
+		jComponent.add(keyboardPanel);
 	}
 	
 	private JButton createButton(int cornerRadius, String text) {

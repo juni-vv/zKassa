@@ -6,19 +6,16 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 
 import javax.swing.JLabel;
 
-import com.juniper.kassa.database.DatabaseConnection;
-import com.juniper.kassa.exception.ConnectionException;
+import com.juniper.kassa.network.controller.AuthenticationController;
+import com.juniper.kassa.network.controller.LoginResult;
 import com.juniper.kassa.page.Page;
 import com.juniper.kassa.page.PageHandler;
 import com.juniper.kassa.swing.JButton;
 import com.juniper.kassa.swing.JPanel;
 import com.juniper.kassa.swing.JPasswordField;
-import com.juniper.kassa.swing.JTextField;
 import com.juniper.kassa.swing.custom.Gradient;
 import com.juniper.kassa.swing.custom.Numpad;
 
@@ -33,7 +30,6 @@ public class LoginPage implements Page {
 
 	private JButton loginButton = new JButton("Login", 40);
 
-	private JPanel footerPanel   = new JPanel();
 	private JPanel keyboardPanel = new JPanel();
 
 	private Numpad numpad = new Numpad(15);
@@ -68,7 +64,6 @@ public class LoginPage implements Page {
 		int passwordFieldY = height / 5 + titleLabel.getPreferredSize().height + 20;
 		passwordField.setBounds(passwordFieldX, passwordFieldY, passwordField.getPreferredSize().width, passwordField.getPreferredSize().height);
 
-		passwordField.addFocusListener(inputFieldsClicked());
 		passwordField.addActionListener(loginButtonPressed());
 
 		_jPanel.add(passwordField);
@@ -96,48 +91,52 @@ public class LoginPage implements Page {
 		
 		_jPanel.add(keyboardPanel);
 
-		/* Footer panel */
-		footerPanel.setPreferredSize(new Dimension(width, 40));
-		footerPanel.setBackground(new Color(25, 26, 56, 75));
-		footerPanel.setBounds(0, height - 40, width, 40);
-		footerPanel.setOpaque(true);
-		footerPanel.setLayout(null);
-
 		timeLabel.setFont(_footerFont);
 		timeLabel.setForeground(Color.white);
-		timeLabel.setBounds(width - timeLabel.getPreferredSize().width - 10, 20 - timeLabel.getPreferredSize().height / 2, timeLabel.getPreferredSize().width, timeLabel.getPreferredSize().height);
+		timeLabel.setBounds(width - timeLabel.getPreferredSize().width - 10, height - timeLabel.getPreferredSize().height - 10, timeLabel.getPreferredSize().width, timeLabel.getPreferredSize().height);
 
-		footerPanel.add(timeLabel);
+		_jPanel.add(timeLabel);
 		
 		numpad.addKeyboardListener((keyEvent) -> {
 			keypadKeyPressHandle(keyEvent.getPressedKey().toString());
 		});
-
-		_jPanel.add(footerPanel);
 	}
 	
 	private void keypadKeyPressHandle(String keyString) {
-		
-	}
+		String key = keyString.split("_")[1];
 
-	private FocusListener inputFieldsClicked() {
-		return new FocusListener() {
-			@Override
-			public void focusGained(FocusEvent e) {
+		String passcode = new String(passwordField.getPassword());
+		if(key.equalsIgnoreCase("backspace")) {
+			if(passcode.length() > 0)
+				passwordField.setText(passcode.substring(0, passcode.length() - 1));
 
-			}
+			return;
+		}
 
-			@Override
-			public void focusLost(FocusEvent e) {
+		if(key.equalsIgnoreCase("enter")) {
+			attemptLogin();
+			return;
+		}
 
-			}
-		};
+		passwordField.setText(passcode + key);
 	}
 
 	private ActionListener loginButtonPressed() {
 		return (ActionEvent actionEvent) -> {
-			
+			attemptLogin();
 		};
+	}
+	
+	private void attemptLogin() {
+		AuthenticationController authController = new AuthenticationController();
+		LoginResult result = authController.attemptLogin(new String(passwordField.getPassword()));
+		
+		passwordField.setText("");
+
+		String jwt = result.getJWT();
+		if(jwt != null) {
+			PageHandler.switchPage("cashierPage");
+		}
 	}
 
 	@Override

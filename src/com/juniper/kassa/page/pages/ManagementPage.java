@@ -2,22 +2,16 @@ package com.juniper.kassa.page.pages;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.NumberFormat;
-import java.util.Locale;
 
-import com.juniper.kassa.database.Database;
 import com.juniper.kassa.page.Page;
 import com.juniper.kassa.page.PageHandler;
 import com.juniper.kassa.swing.JButton;
 import com.juniper.kassa.swing.JPanel;
 import com.juniper.kassa.swing.JTextField;
-import com.juniper.kassa.swing.custom.FontManager;
 import com.juniper.kassa.swing.custom.Gradient;
 import com.juniper.kassa.swing.custom.Numpad;
 
@@ -38,7 +32,7 @@ public class ManagementPage implements Page {
 
 		_jPanel.setGradient(new Gradient(0, 0, width, height, Color.decode("#0860C4"), Color.decode("#d5418f")));
 		_jPanel.setLayout(null);
-		
+
 		keyboardPanel.setOpaque(false);
 		keyboardPanel.add(numpad.getJPanel());
 
@@ -57,7 +51,7 @@ public class ManagementPage implements Page {
 		});
 
 		_jPanel.add(productCodeField);
-		
+
 		keyboardPanel.setBounds(width - numpad.getWidth(), codeHeight + 10, numpad.getWidth(), numpad.getHeight());
 
 		int signoutWidth = numpad.getWidth() - 20, signoutHeight = 50;
@@ -69,7 +63,7 @@ public class ManagementPage implements Page {
 		signoutButton.setArmedColor(new Color(237, 237, 237, 200));
 		signoutButton.setBounds(width - signoutWidth - 10, height - signoutHeight - 10, signoutWidth, signoutHeight);
 		signoutButton.addActionListener(signOut());
-		
+
 		numpad.addKeyboardListener((keyEvent) -> {
 			numpadKeyPressHandle(keyEvent.getPressedKey().toString());
 		});
@@ -77,33 +71,33 @@ public class ManagementPage implements Page {
 		_jPanel.add(signoutButton);
 		_jPanel.add(keyboardPanel);
 	}
-	
+
 	private void numpadKeyPressHandle(String keyString) {
 		String key = keyString.split("_")[1];
 		System.out.println(key);
-		
+
 		if(key.equalsIgnoreCase("backspace")) {
 			if(productCodeField.getText().length() > 0)
 				productCodeField.setText(productCodeField.getText().substring(0, productCodeField.getText().length() - 1));
-			
+
 			return;
 		}
-		
+
 		if(key.equalsIgnoreCase("enter")) {
 			searchProduct();
 			return;
 		}
-		
+
 		productCodeField.setText(productCodeField.getText() + key);
 	}
-	
+
 	private void searchProduct() {
-		//TODO: Search product, add line
+		// TODO: Search product, add line
 	}
 
 	private ActionListener signOut() {
 		return (ActionEvent e) -> {
-			Database.getConnection().close();
+//TODO: Handle signout
 			PageHandler.switchPage("loginPage");
 		};
 	}

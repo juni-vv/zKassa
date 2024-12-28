@@ -7,7 +7,6 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import com.juniper.kassa.database.Database;
 import com.juniper.kassa.page.Page;
 import com.juniper.kassa.page.PageHandler;
 import com.juniper.kassa.swing.JButton;
@@ -96,7 +95,7 @@ public class CashierPage implements Page {
 
 	private ActionListener signOut() {
 		return (ActionEvent e) -> {
-			Database.getConnection().close();
+			//TODO: handle signout
 			PageHandler.switchPage("loginPage");
 		};
 	}

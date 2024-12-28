@@ -1,5 +1,6 @@
 package com.juniper.kassa;
 
+import com.juniper.kassa.configuration.Configuration;
 import com.juniper.kassa.configuration.ConfigurationHandler;
 import com.juniper.kassa.page.PageHandler;
 import com.juniper.kassa.page.pages.CashierPage;
@@ -15,8 +16,6 @@ public class Start {
 		PageHandler.addPage("cashierPage", new CashierPage());
 		PageHandler.addPage("managementPage", new ManagementPage());
 		PageHandler.switchPage("loginPage");
-
-		ConfigurationHandler.loadConfig("network.yml");
 	}
 
 }

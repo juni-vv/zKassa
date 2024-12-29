@@ -47,8 +47,19 @@ public class PageHandler {
 		_jFrame.setVisible(true);
 		
 		Page page = _pages.get(name);
-		if(page != null)
+		if(page != null) {
 			page.resume();
+			return;
+		}
+		
+		System.out.println("Page \"" + name + "\" was not found.");
+	}
+	
+	public static void sendWebToken(String name, String token) {
+		Page page = _pages.get(name);
+		if(page != null) {
+			page.setWebToken(token);
+		}
 	}
 
 }

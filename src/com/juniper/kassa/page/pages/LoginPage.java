@@ -6,11 +6,14 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.JLabel;
 
 import com.juniper.kassa.network.controller.AuthenticationController;
-import com.juniper.kassa.network.controller.LoginResult;
+import com.juniper.kassa.network.controller.authentication.LoginResult;
+import com.juniper.kassa.network.controller.authentication.LoginResult.Type;
 import com.juniper.kassa.page.Page;
 import com.juniper.kassa.page.PageHandler;
 import com.juniper.kassa.swing.JButton;
@@ -23,8 +26,9 @@ public class LoginPage implements Page {
 
 	private JPanel _jPanel;
 
-	private JLabel titleLabel = new JLabel("Authentication");
-	private JLabel timeLabel  = new JLabel("01-01-2000 00:00:00");
+	private JLabel titleLabel        = new JLabel("Authentication");
+	private JLabel timeLabel         = new JLabel("01-01-2000 00:00:00");
+	private JLabel accessDeniedLabel = new JLabel("Label");
 
 	private JPasswordField passwordField = new JPasswordField();
 
@@ -47,9 +51,7 @@ public class LoginPage implements Page {
 		titleLabel.setFont(_titleFont);
 		titleLabel.setForeground(Color.white);
 		titleLabel.setBounds(width / 2 - titleLabel.getPreferredSize().width / 2, height / 5, width, titleLabel.getPreferredSize().height);
-
-		_jPanel.add(titleLabel);
-
+		
 		/* Password field */
 		passwordField.setPreferredSize(new Dimension(400, 50));
 		passwordField.setHintText("Passcode");
@@ -65,9 +67,13 @@ public class LoginPage implements Page {
 		passwordField.setBounds(passwordFieldX, passwordFieldY, passwordField.getPreferredSize().width, passwordField.getPreferredSize().height);
 
 		passwordField.addActionListener(loginButtonPressed());
-
-		_jPanel.add(passwordField);
-
+		passwordField.addFocusListener(inputFieldsClicked());
+		
+		/* Access denied label */
+		accessDeniedLabel.setFont(_errorFont);
+		accessDeniedLabel.setForeground(new Color(0xEF4550));
+		accessDeniedLabel.setBounds(width / 2 - accessDeniedLabel.getPreferredSize().width / 2, passwordField.getBounds().y - accessDeniedLabel.getPreferredSize().height, width, accessDeniedLabel.getPreferredSize().height);
+		
 		/* Login button */
 		loginButton.setPreferredSize(new Dimension(400, 50));
 		loginButton.setFont(_defaultFont);
@@ -82,28 +88,32 @@ public class LoginPage implements Page {
 
 		loginButton.addActionListener(loginButtonPressed());
 
-		_jPanel.add(loginButton);
-
 		/* Keyboard */
 		keyboardPanel.add(numpad.getJPanel());
-		
 		keyboardPanel.setBounds(width / 2 - numpad.getWidth() / 2, height - 50 - numpad.getHeight(), numpad.getWidth(), numpad.getHeight());
 		
-		_jPanel.add(keyboardPanel);
+		numpad.addKeyboardListener((keyEvent) -> {
+			keypadKeyPressHandle(keyEvent.getPressedKey().toString());
+		});
 
+		/* Time label */
 		timeLabel.setFont(_footerFont);
 		timeLabel.setForeground(Color.white);
 		timeLabel.setBounds(width - timeLabel.getPreferredSize().width - 10, height - timeLabel.getPreferredSize().height - 10, timeLabel.getPreferredSize().width, timeLabel.getPreferredSize().height);
 
 		_jPanel.add(timeLabel);
-		
-		numpad.addKeyboardListener((keyEvent) -> {
-			keypadKeyPressHandle(keyEvent.getPressedKey().toString());
-		});
+		_jPanel.add(passwordField);
+		_jPanel.add(keyboardPanel);
+		_jPanel.add(loginButton);
+		_jPanel.add(titleLabel);
+		_jPanel.add(accessDeniedLabel);
 	}
-	
+
 	private void keypadKeyPressHandle(String keyString) {
 		String key = keyString.split("_")[1];
+		
+		passwordField.setBorderVisible(false);
+		passwordField.repaint();
 
 		String passcode = new String(passwordField.getPassword());
 		if(key.equalsIgnoreCase("backspace")) {
@@ -120,23 +130,65 @@ public class LoginPage implements Page {
 
 		passwordField.setText(passcode + key);
 	}
+	
+	private FocusListener inputFieldsClicked() {
+		return new FocusListener() {
+			@Override
+			public void focusGained(FocusEvent e) {	
+				accessDeniedLabel.setText("");
+				
+				passwordField.setBorderVisible(false);
+				passwordField.repaint();
+			}
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				
+			}
+		};
+	}
 
 	private ActionListener loginButtonPressed() {
 		return (ActionEvent actionEvent) -> {
 			attemptLogin();
 		};
 	}
-	
+
 	private void attemptLogin() {
 		AuthenticationController authController = new AuthenticationController();
-		LoginResult result = authController.attemptLogin(new String(passwordField.getPassword()));
-		
+		LoginResult              result         = authController.attemptLogin(new String(passwordField.getPassword()));
+
 		passwordField.setText("");
 
-		String jwt = result.getJWT();
-		if(jwt != null) {
-			PageHandler.switchPage("cashierPage");
+		if(result.getResponse() != null && result.getType() == Type.Success) {
+			String jwt = result.getResponse().body();
+			if(jwt != null) {
+				String page = "cashierPage";
+				PageHandler.sendWebToken(page, jwt);
+				PageHandler.switchPage(page);
+				return;
+			}
 		}
+
+		if(result.getType() == Type.NoPermission) {
+			accessDeniedLabel.setText("You don't have permission to perform this action.");
+			accessDeniedLabel.setBounds((int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 2 - accessDeniedLabel.getPreferredSize().width / 2), accessDeniedLabel.getBounds().y, accessDeniedLabel.getBounds().width, accessDeniedLabel.getBounds().height);
+			
+			passwordField.setBorderVisible(true);
+			passwordField.repaint();
+			return;
+		}
+		if(result.getType() == Type.NoConnection) {
+			// The machine could not connect to the server, ask for restart
+			return;
+		}
+
+		// Unknown error code, send data to developers
+	}
+
+	@Override
+	public void setWebToken(String token) {
+
 	}
 
 	@Override

@@ -20,5 +20,7 @@ public interface Page {
 	public void init();
 
 	public JPanel getPanel();
+	
+	public void setWebToken(String token);
 
 }

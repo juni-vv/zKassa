@@ -11,7 +11,8 @@ import java.net.http.HttpResponse.BodyHandlers;
 
 import org.json.JSONObject;
 
-import com.juniper.kassa.network.controller.LoginResult.Type;
+import com.juniper.kassa.network.controller.authentication.LoginResult;
+import com.juniper.kassa.network.controller.authentication.LoginResult.Type;
 
 public class AuthenticationController extends Controller {
 
@@ -27,14 +28,16 @@ public class AuthenticationController extends Controller {
 			HttpResponse<String> response = HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
 
 			if(response.statusCode() == 200)
-				return new LoginResult(Type.Success, response.body());
+				return new LoginResult(Type.Success, response);
+			
+			
 		} catch(ConnectException ce) {
-			return new LoginResult(Type.NoConnection);
+			return new LoginResult(Type.NoConnection, null);
 		} catch(IOException | InterruptedException e) {
 			e.printStackTrace();
 		}
 
-		return new LoginResult(Type.NoPermission);
+		return new LoginResult(Type.NoPermission, null);
 	}
 
 }

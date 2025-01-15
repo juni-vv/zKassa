@@ -120,6 +120,7 @@ public class Numpad {
 		button.setFocusPainted(false);
 		button.setColor(new Color(237, 237, 237, 150));
 		button.setArmedColor(new Color(237, 237, 237, 200));
+		button.setForeground(Color.white);
 
 		return button;
 	}

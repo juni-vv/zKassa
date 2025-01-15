@@ -1,4 +1,4 @@
-package com.juniper.kassa.network.controller;
+package com.juniper.kassa.network.controller.authentication;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -11,7 +11,7 @@ import java.net.http.HttpResponse.BodyHandlers;
 
 import org.json.JSONObject;
 
-import com.juniper.kassa.network.controller.authentication.LoginResult;
+import com.juniper.kassa.network.controller.Controller;
 import com.juniper.kassa.network.controller.authentication.LoginResult.Type;
 
 public class AuthenticationController extends Controller {
@@ -22,7 +22,7 @@ public class AuthenticationController extends Controller {
 		JSONObject json = new JSONObject();
 		json.put("UserName", passcode);
 
-		HttpRequest request = HttpRequest.newBuilder().uri(URI.create(ip + ":" + port + route)).header("Content-Type", "application/json").POST(BodyPublishers.ofString(json.toString())).build();
+		HttpRequest request = postRequest(route, json);
 		
 		try {
 			HttpResponse<String> response = HttpClient.newHttpClient().send(request, BodyHandlers.ofString());

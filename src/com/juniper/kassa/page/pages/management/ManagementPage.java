@@ -1,4 +1,4 @@
-package com.juniper.kassa.page.pages;
+package com.juniper.kassa.page.pages.management;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JLabel;
 
+import com.juniper.kassa.network.controller.product.ProductController;
+import com.juniper.kassa.network.controller.product.ProductInfo;
 import com.juniper.kassa.page.Page;
 import com.juniper.kassa.page.PageHandler;
 import com.juniper.kassa.swing.JButton;
@@ -16,6 +18,7 @@ import com.juniper.kassa.swing.JPanel;
 import com.juniper.kassa.swing.JTextField;
 import com.juniper.kassa.swing.custom.Gradient;
 import com.juniper.kassa.swing.custom.Numpad;
+import com.juniper.kassa.swing.custom.Popup;
 
 public class ManagementPage implements Page {
 
@@ -25,10 +28,13 @@ public class ManagementPage implements Page {
 	private Numpad numpad        = new Numpad(15);
 
 	private JTextField productCodeField = new JTextField("Product code");
-	private JButton    signoutButton    = new JButton("Sign out", 40);
-	
+
+	private JButton signoutButton    = new JButton("Sign out", 40);
+	private JButton deliveriesButton = new JButton("Deliveries", 15);
+	private JButton mRegistersButton = new JButton("Manage registers", 15);
+
 	private JLabel timeLabel = new JLabel("01-01-2000 00:00:00");
-	
+
 	private String jwt;
 
 	@Override
@@ -40,13 +46,13 @@ public class ManagementPage implements Page {
 		_jPanel.setLayout(null);
 
 		keyboardPanel.add(numpad.getJPanel());
-		
+
 		timeLabel.setFont(_footerFont);
 		timeLabel.setForeground(Color.white);
 		timeLabel.setBounds(width - timeLabel.getPreferredSize().width - 10, height - timeLabel.getPreferredSize().height - 10, timeLabel.getPreferredSize().width, timeLabel.getPreferredSize().height);
 
 		_jPanel.add(timeLabel);
-		
+
 		int signoutWidth = numpad.getWidth() - 20, signoutHeight = 50;
 		signoutButton.setPreferredSize(new Dimension(signoutWidth, signoutHeight));
 		signoutButton.setFont(_defaultFont);
@@ -58,6 +64,24 @@ public class ManagementPage implements Page {
 		signoutButton.addActionListener(signOut());
 
 		keyboardPanel.setBounds(width - numpad.getWidth(), signoutButton.getBounds().y - keyboardPanel.getPreferredSize().height, numpad.getWidth(), numpad.getHeight());
+
+		int deliveriesWidth = numpad.getWidth() / 2 - 15, deliveriesHeight = 50;
+		deliveriesButton.setPreferredSize(new Dimension(deliveriesWidth, deliveriesHeight));
+		deliveriesButton.setFont(_defaultFont);
+		deliveriesButton.setFocusPainted(false);
+		deliveriesButton.setForeground(Color.white);
+		deliveriesButton.setColor(new Color(237, 237, 237, 150));
+		deliveriesButton.setArmedColor(new Color(237, 237, 237, 200));
+		deliveriesButton.setBounds(width - deliveriesWidth - 10, 10, deliveriesWidth, deliveriesHeight);
+		
+		int registersWidth = deliveriesWidth, registersHeight = deliveriesHeight;
+		mRegistersButton.setPreferredSize(new Dimension(registersWidth, registersHeight));
+		mRegistersButton.setFont(_defaultFont);
+		mRegistersButton.setFocusPainted(false);
+		mRegistersButton.setForeground(Color.white);
+		mRegistersButton.setColor(new Color(237, 237, 237, 150));
+		mRegistersButton.setArmedColor(new Color(237, 237, 237, 200));
+		mRegistersButton.setBounds(width - registersWidth - deliveriesWidth - 20, 10, registersWidth, registersHeight);
 		
 		int codeWidth = numpad.getWidth() - 20, codeHeight = 50;
 		productCodeField = new JTextField("Product code:");
@@ -73,19 +97,19 @@ public class ManagementPage implements Page {
 			searchProduct();
 		});
 
-		_jPanel.add(productCodeField);
-
 		numpad.addKeyboardListener((keyEvent) -> {
 			numpadKeyPressHandle(keyEvent.getPressedKey().toString());
 		});
 
 		_jPanel.add(signoutButton);
 		_jPanel.add(keyboardPanel);
+		_jPanel.add(productCodeField);
+		_jPanel.add(deliveriesButton);
+		_jPanel.add(mRegistersButton);
 	}
 
 	private void numpadKeyPressHandle(String keyString) {
 		String key = keyString.split("_")[1];
-		System.out.println(key);
 
 		if(key.equalsIgnoreCase("backspace")) {
 			if(productCodeField.getText().length() > 0)
@@ -103,6 +127,13 @@ public class ManagementPage implements Page {
 	}
 
 	private void searchProduct() {
+		ProductController productController = new ProductController();
+		ProductInfo productInfo = productController.getProduct(productCodeField.getText(), jwt);
+		
+		if(productInfo == null) {
+			Popup popup = new Popup(this, "Error", "This product could not be found!");
+			popup.show();
+		}
 		// TODO: Search product, add line
 	}
 
@@ -112,7 +143,7 @@ public class ManagementPage implements Page {
 			PageHandler.switchPage("loginPage");
 		};
 	}
-	
+
 	@Override
 	public void setWebToken(String token) {
 		jwt = token;

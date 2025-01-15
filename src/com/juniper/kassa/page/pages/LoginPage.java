@@ -11,7 +11,7 @@ import java.awt.event.FocusListener;
 
 import javax.swing.JLabel;
 
-import com.juniper.kassa.network.controller.AuthenticationController;
+import com.juniper.kassa.network.controller.authentication.AuthenticationController;
 import com.juniper.kassa.network.controller.authentication.LoginResult;
 import com.juniper.kassa.network.controller.authentication.LoginResult.Type;
 import com.juniper.kassa.page.Page;
@@ -163,7 +163,7 @@ public class LoginPage implements Page {
 		if(result.getResponse() != null && result.getType() == Type.Success) {
 			String jwt = result.getResponse().body();
 			if(jwt != null) {
-				String page = "cashierPage";
+				String page = "managementPage";
 				PageHandler.sendWebToken(page, jwt);
 				PageHandler.switchPage(page);
 				return;
@@ -179,7 +179,11 @@ public class LoginPage implements Page {
 			return;
 		}
 		if(result.getType() == Type.NoConnection) {
-			// The machine could not connect to the server, ask for restart
+			accessDeniedLabel.setText("Could not connect, contact the system admin.");
+			accessDeniedLabel.setBounds((int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 2 - accessDeniedLabel.getPreferredSize().width / 2), accessDeniedLabel.getBounds().y, accessDeniedLabel.getBounds().width, accessDeniedLabel.getBounds().height);
+			
+			passwordField.setBorderVisible(true);
+			passwordField.repaint();
 			return;
 		}
 

@@ -19,15 +19,14 @@ public class ProductController extends Controller {
 
 		try {
 			HttpResponse<String> response = HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
-			System.out.println(response.body());
 
 			if(response.statusCode() != 200) {
 				return null;
 			}
 
-			JSONObject responseObject = new JSONObject(response);
+			JSONObject responseObject = new JSONObject(response.body());
 			return new ProductInfo(
-					UUID.fromString(responseObject.getString("id")),
+					/*UUID.fromString(responseObject.getString("id"))*/UUID.randomUUID(),
 					responseObject.getString("name"),
 					responseObject.getDouble("price"), 
 					/*responseObject.getInt("productStatus")*/0);

@@ -7,6 +7,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 import com.juniper.kassa.network.controller.product.ProductController;
@@ -130,10 +131,15 @@ public class ManagementPage implements Page {
 		ProductController productController = new ProductController();
 		ProductInfo productInfo = productController.getProduct(productCodeField.getText(), jwt);
 		
+		productCodeField.requestFocus();
+		productCodeField.selectAll();
+		
 		if(productInfo == null) {
 			Popup popup = new Popup(this, "Error", "This product could not be found!");
+			popup.setNextFocus(productCodeField);
 			popup.show();
 		}
+		
 		// TODO: Search product, add line
 	}
 

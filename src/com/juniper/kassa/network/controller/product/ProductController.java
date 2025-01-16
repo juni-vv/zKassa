@@ -15,23 +15,23 @@ public class ProductController extends Controller {
 	public ProductInfo getProduct(String code, String jwt) {
 		String route = "/Product/" + code;
 
-		HttpRequest request = getRequest(route, jwt);
-
 		try {
-			HttpResponse<String> response = HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
+			HttpRequest request = getRequest(route, jwt);
 
-			if(response.statusCode() != 200) {
-				return null;
+			try {
+				HttpResponse<String> response = HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
+
+				if(response.statusCode() != 200) {
+					return null;
+				}
+
+				JSONObject responseObject = new JSONObject(response.body());
+				return new ProductInfo(/* UUID.fromString(responseObject.getString("id")) */UUID.randomUUID(), responseObject.getString("name"), responseObject.getDouble("price"), /* responseObject.getInt("productStatus") */0);
+			} catch(Exception e) {
+				e.printStackTrace();
 			}
-
-			JSONObject responseObject = new JSONObject(response.body());
-			return new ProductInfo(
-					/*UUID.fromString(responseObject.getString("id"))*/UUID.randomUUID(),
-					responseObject.getString("name"),
-					responseObject.getDouble("price"), 
-					/*responseObject.getInt("productStatus")*/0);
-		} catch(Exception e) {
-			e.printStackTrace();
+		} catch(IllegalArgumentException e) {
+			return null;
 		}
 
 		return null;

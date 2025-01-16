@@ -26,7 +26,9 @@ public class ManagementPage implements Page {
 	private JPanel _jPanel;
 
 	private JPanel keyboardPanel = new JPanel();
-	private Numpad numpad        = new Numpad(15);
+	private JPanel productPanel  = new JPanel();
+
+	private Numpad numpad = new Numpad(15);
 
 	private JTextField productCodeField = new JTextField("Product code");
 
@@ -34,7 +36,8 @@ public class ManagementPage implements Page {
 	private JButton deliveriesButton = new JButton("Deliveries", 15);
 	private JButton mRegistersButton = new JButton("Manage registers", 15);
 
-	private JLabel timeLabel = new JLabel("01-01-2000 00:00:00");
+	private JLabel timeLabel    = new JLabel("01-01-2000 00:00:00");
+	private JLabel productTitle = new JLabel("{productTitle}");
 
 	private String jwt;
 
@@ -66,6 +69,17 @@ public class ManagementPage implements Page {
 
 		keyboardPanel.setBounds(width - numpad.getWidth(), signoutButton.getBounds().y - keyboardPanel.getPreferredSize().height, numpad.getWidth(), numpad.getHeight());
 
+		productPanel.setBounds(10, 10, width - signoutWidth - 30, height - 20);
+		productPanel.setBackground(Color.black);
+		productPanel.setLayout(null);
+		productPanel.setVisible(false);
+
+		productTitle.setFont(_subtitleFont);
+		productTitle.setForeground(Color.white);
+		productTitle.setBounds(10, 10, productPanel.getPreferredSize().width - 20, productTitle.getPreferredSize().height);
+
+		productPanel.add(productTitle);
+
 		int deliveriesWidth = numpad.getWidth() / 2 - 15, deliveriesHeight = 50;
 		deliveriesButton.setPreferredSize(new Dimension(deliveriesWidth, deliveriesHeight));
 		deliveriesButton.setFont(_defaultFont);
@@ -74,7 +88,7 @@ public class ManagementPage implements Page {
 		deliveriesButton.setColor(new Color(237, 237, 237, 150));
 		deliveriesButton.setArmedColor(new Color(237, 237, 237, 200));
 		deliveriesButton.setBounds(width - deliveriesWidth - 10, 10, deliveriesWidth, deliveriesHeight);
-		
+
 		int registersWidth = deliveriesWidth, registersHeight = deliveriesHeight;
 		mRegistersButton.setPreferredSize(new Dimension(registersWidth, registersHeight));
 		mRegistersButton.setFont(_defaultFont);
@@ -83,7 +97,7 @@ public class ManagementPage implements Page {
 		mRegistersButton.setColor(new Color(237, 237, 237, 150));
 		mRegistersButton.setArmedColor(new Color(237, 237, 237, 200));
 		mRegistersButton.setBounds(width - registersWidth - deliveriesWidth - 20, 10, registersWidth, registersHeight);
-		
+
 		int codeWidth = numpad.getWidth() - 20, codeHeight = 50;
 		productCodeField = new JTextField("Product code:");
 		productCodeField.setPreferredSize(new Dimension(codeWidth, codeHeight));
@@ -104,6 +118,7 @@ public class ManagementPage implements Page {
 
 		_jPanel.add(signoutButton);
 		_jPanel.add(keyboardPanel);
+		_jPanel.add(productPanel);
 		_jPanel.add(productCodeField);
 		_jPanel.add(deliveriesButton);
 		_jPanel.add(mRegistersButton);
@@ -129,23 +144,31 @@ public class ManagementPage implements Page {
 
 	private void searchProduct() {
 		ProductController productController = new ProductController();
-		ProductInfo productInfo = productController.getProduct(productCodeField.getText(), jwt);
-		
+		ProductInfo       productInfo       = productController.getProduct(productCodeField.getText(), jwt);
+
 		productCodeField.requestFocus();
 		productCodeField.selectAll();
-		
+
 		if(productInfo == null) {
 			Popup popup = new Popup(this, "Error", "This product could not be found!");
 			popup.setNextFocus(productCodeField);
 			popup.show();
+
+			return;
 		}
+
+		productTitle.setText(productInfo.getName());
 		
-		// TODO: Search product, add line
+		productPanel.setVisible(true);
+
+		// TODO: Search product, add information
 	}
 
 	private ActionListener signOut() {
 		return (ActionEvent e) -> {
 			jwt = null;
+			productCodeField.setText("");
+			productPanel.setVisible(false);
 			PageHandler.switchPage("loginPage");
 		};
 	}

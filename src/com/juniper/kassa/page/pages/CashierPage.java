@@ -75,30 +75,11 @@ public class CashierPage implements Page {
 
 		_jPanel.add(productCodeField);
 
-		numpad.addKeyboardListener((keyEvent) -> {
-			numpadKeyPressHandle(keyEvent.getPressedKey().toString());
-		});
+		numpad.setTargetField(productCodeField);
+		numpad.setEnterKeyListener(() -> searchProduct());
 
 		_jPanel.add(signoutButton);
 		_jPanel.add(keyboardPanel);
-	}
-
-	private void numpadKeyPressHandle(String keyString) {
-		String key = keyString.split("_")[1];
-
-		if(key.equalsIgnoreCase("backspace")) {
-			if(productCodeField.getText().length() > 0)
-				productCodeField.setText(productCodeField.getText().substring(0, productCodeField.getText().length() - 1));
-
-			return;
-		}
-
-		if(key.equalsIgnoreCase("enter")) {
-			searchProduct();
-			return;
-		}
-
-		productCodeField.setText(productCodeField.getText() + key);
 	}
 
 	private void searchProduct() {

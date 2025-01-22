@@ -1,2 +1,3 @@
 bin/
 database_repair.log
+*.class

@@ -33,7 +33,9 @@ public class ManagementPage implements Page {
 
 	private JButton signoutButton    = new JButton("Sign out", 40);
 	private JButton deliveriesButton = new JButton("Deliveries", 15);
-	private JButton mRegistersButton = new JButton("Manage registers", 15);
+	private JButton registersButton = new JButton("Registers", 15);
+	private JButton staffButton = new JButton("Staff", 15);
+	private JButton scheduleButton = new JButton("Schedules", 15);
 
 	private JLabel timeLabel    = new JLabel("01-01-2000 00:00:00");
 	private JLabel productTitle = new JLabel("{productTitle}");
@@ -79,23 +81,39 @@ public class ManagementPage implements Page {
 
 		productPanel.add(productTitle);
 
-		int deliveriesWidth = numpad.getWidth() / 2 - 15, deliveriesHeight = 50;
-		deliveriesButton.setPreferredSize(new Dimension(deliveriesWidth, deliveriesHeight));
+		int mButtonsWidth = numpad.getWidth() / 2 - 15, mButtonsHeight = 50;
+		
+		deliveriesButton.setPreferredSize(new Dimension(mButtonsWidth, mButtonsHeight));
 		deliveriesButton.setFont(_defaultFont);
 		deliveriesButton.setFocusPainted(false);
 		deliveriesButton.setForeground(Color.white);
 		deliveriesButton.setColor(new Color(237, 237, 237, 150));
 		deliveriesButton.setArmedColor(new Color(237, 237, 237, 200));
-		deliveriesButton.setBounds(width - deliveriesWidth - 10, 10, deliveriesWidth, deliveriesHeight);
+		deliveriesButton.setBounds(width - mButtonsWidth - 10, 10, mButtonsWidth, mButtonsHeight);
 
-		int registersWidth = deliveriesWidth, registersHeight = deliveriesHeight;
-		mRegistersButton.setPreferredSize(new Dimension(registersWidth, registersHeight));
-		mRegistersButton.setFont(_defaultFont);
-		mRegistersButton.setFocusPainted(false);
-		mRegistersButton.setForeground(Color.white);
-		mRegistersButton.setColor(new Color(237, 237, 237, 150));
-		mRegistersButton.setArmedColor(new Color(237, 237, 237, 200));
-		mRegistersButton.setBounds(width - registersWidth - deliveriesWidth - 20, 10, registersWidth, registersHeight);
+		registersButton.setPreferredSize(new Dimension(mButtonsWidth, mButtonsHeight));
+		registersButton.setFont(_defaultFont);
+		registersButton.setFocusPainted(false);
+		registersButton.setForeground(Color.white);
+		registersButton.setColor(new Color(237, 237, 237, 150));
+		registersButton.setArmedColor(new Color(237, 237, 237, 200));
+		registersButton.setBounds(width - mButtonsWidth - mButtonsWidth - 20, 10, mButtonsWidth, mButtonsHeight);
+		
+		staffButton.setPreferredSize(new Dimension(mButtonsWidth, mButtonsHeight));
+		staffButton.setFont(_defaultFont);
+		staffButton.setFocusPainted(false);
+		staffButton.setForeground(Color.white);
+		staffButton.setColor(new Color(237, 237, 237, 150));
+		staffButton.setArmedColor(new Color(237, 237, 237, 200));
+		staffButton.setBounds(width - mButtonsWidth - mButtonsWidth - 20, 20 + mButtonsHeight, mButtonsWidth, mButtonsHeight);
+		
+		scheduleButton.setPreferredSize(new Dimension(mButtonsWidth, mButtonsHeight));
+		scheduleButton.setFont(_defaultFont);
+		scheduleButton.setFocusPainted(false);
+		scheduleButton.setForeground(Color.white);
+		scheduleButton.setColor(new Color(237, 237, 237, 150));
+		scheduleButton.setArmedColor(new Color(237, 237, 237, 200));
+		scheduleButton.setBounds(width - mButtonsWidth - 10, 20 + mButtonsHeight, mButtonsWidth, mButtonsHeight);
 
 		int codeWidth = numpad.getWidth() - 20, codeHeight = 50;
 		productCodeField = new JTextField("Product code:");
@@ -119,10 +137,10 @@ public class ManagementPage implements Page {
 		_jPanel.add(productPanel);
 		_jPanel.add(productCodeField);
 		_jPanel.add(deliveriesButton);
-		_jPanel.add(mRegistersButton);
+		_jPanel.add(registersButton);
+		_jPanel.add(staffButton);
+		_jPanel.add(scheduleButton);
 	}
-
-	
 
 	private void searchProduct() {
 		ProductController productController = new ProductController();

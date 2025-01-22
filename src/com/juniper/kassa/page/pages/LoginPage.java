@@ -20,8 +20,8 @@ import com.juniper.kassa.swing.JButton;
 import com.juniper.kassa.swing.JPanel;
 import com.juniper.kassa.swing.JPasswordField;
 import com.juniper.kassa.swing.custom.Gradient;
-import com.juniper.kassa.swing.custom.Numpad;
 import com.juniper.kassa.swing.custom.Popup;
+import com.juniper.kassa.swing.custom.numpad.Numpad;
 
 public class LoginPage implements Page {
 
@@ -93,9 +93,8 @@ public class LoginPage implements Page {
 		keyboardPanel.add(numpad.getJPanel());
 		keyboardPanel.setBounds(width / 2 - numpad.getWidth() / 2, height - 50 - numpad.getHeight(), numpad.getWidth(), numpad.getHeight());
 		
-		numpad.addKeyboardListener((keyEvent) -> {
-			keypadKeyPressHandle(keyEvent.getPressedKey().toString());
-		});
+		numpad.setTargetField(passwordField);
+		numpad.setEnterKeyListener(() -> attemptLogin());
 
 		/* Time label */
 		timeLabel.setFont(_footerFont);
@@ -108,28 +107,6 @@ public class LoginPage implements Page {
 		_jPanel.add(loginButton);
 		_jPanel.add(titleLabel);
 		_jPanel.add(accessDeniedLabel);
-	}
-
-	private void keypadKeyPressHandle(String keyString) {
-		String key = keyString.split("_")[1];
-		
-		passwordField.setBorderVisible(false);
-		passwordField.repaint();
-
-		String passcode = new String(passwordField.getPassword());
-		if(key.equalsIgnoreCase("backspace")) {
-			if(passcode.length() > 0)
-				passwordField.setText(passcode.substring(0, passcode.length() - 1));
-
-			return;
-		}
-
-		if(key.equalsIgnoreCase("enter")) {
-			attemptLogin();
-			return;
-		}
-
-		passwordField.setText(passcode + key);
 	}
 	
 	private FocusListener inputFieldsClicked() {
@@ -161,8 +138,8 @@ public class LoginPage implements Page {
 
 		passwordField.setText("");
 
-		if(result.getResponse() != null && result.getType() == Type.Success) {
-			String jwt = result.getResponse().body();
+		if(result.getType() == Type.Success) {
+			String jwt = result.getToken();
 			if(jwt != null) {
 				String page = "managementPage";
 				PageHandler.sendWebToken(page, jwt);

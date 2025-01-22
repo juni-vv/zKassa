@@ -2,6 +2,8 @@ package com.juniper.kassa.network.controller.authentication;
 
 import java.net.http.HttpResponse;
 
+import org.json.JSONObject;
+
 public class LoginResult {
 
 	private final Type                 type;
@@ -16,8 +18,9 @@ public class LoginResult {
 		return type;
 	}
 	
-	public HttpResponse<String> getResponse() {
-		return response;
+	public String getToken() {
+		JSONObject responseObject = new JSONObject(response.body());
+		return responseObject.getString("jwt");
 	}
 
 	public enum Type {

@@ -20,15 +20,17 @@ public class AuthenticationController extends Controller {
 		String route = "/Authentication/Login";
 
 		JSONObject json = new JSONObject();
-		json.put("UserName", passcode);
+		json.put("userName", passcode);
 
 		HttpRequest request = postRequest(route, json);
 		
 		try {
 			HttpResponse<String> response = HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
-
+			
 			if(response.statusCode() == 200)
 				return new LoginResult(Type.Success, response);
+			
+			System.out.println(response.statusCode());
 			
 			
 		} catch(ConnectException ce) {

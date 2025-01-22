@@ -15,7 +15,7 @@ import com.juniper.kassa.swing.JButton;
 import com.juniper.kassa.swing.JPanel;
 import com.juniper.kassa.swing.JTextField;
 import com.juniper.kassa.swing.custom.Gradient;
-import com.juniper.kassa.swing.custom.Numpad;
+import com.juniper.kassa.swing.custom.numpad.Numpad;
 
 public class CashierPage implements Page {
 

@@ -1,6 +1,7 @@
 package com.juniper.kassa.swing.custom;
 
-import com.juniper.kassa.swing.custom.Numpad.Key;
+import com.juniper.kassa.swing.custom.numpad.Numpad;
+import com.juniper.kassa.swing.custom.numpad.Numpad.Key;
 
 public class KeyboardEvent {
 	

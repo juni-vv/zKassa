@@ -20,7 +20,8 @@ public class ProductController extends Controller {
 
 			try {
 				HttpResponse<String> response = HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
-
+				System.out.println(response.toString());
+				
 				if(response.statusCode() != 200) {
 					return null;
 				}

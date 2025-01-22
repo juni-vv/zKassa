@@ -1,4 +1,4 @@
-package com.juniper.kassa.swing.custom;
+package com.juniper.kassa.swing.custom.numpad;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -9,9 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComponent;
+import javax.swing.JTextField;
 
 import com.juniper.kassa.swing.JButton;
 import com.juniper.kassa.swing.JPanel;
+import com.juniper.kassa.swing.custom.FontManager;
+import com.juniper.kassa.swing.custom.KeyboardEvent;
+import com.juniper.kassa.swing.custom.KeyboardListener;
 
 public class Numpad {
 
@@ -19,6 +23,9 @@ public class Numpad {
 
 	private JPanel                 keyboardPanel      = new JPanel(new GridBagLayout());
 	private List<KeyboardListener> keyboardListeners = new ArrayList<KeyboardListener>();
+	
+	private EnterKeyListener enterKeyListener;
+	private JTextField targetField;
 
 	public Numpad(int cornerRadius) {
 		keyboardPanel.setOpaque(false);
@@ -81,6 +88,18 @@ public class Numpad {
 		constraints.gridheight = 4;
 		jb_enter.setPreferredSize(new Dimension(125, 85 * 4 + 10 * 3));
 		keyboardPanel.add(jb_enter, constraints);
+		
+		addKeyboardListener((keyEvent) -> {
+			numpadKeyPressHandle(keyEvent.getPressedKey().toString());
+		});
+	}
+	
+	public void setTargetField(JTextField targetField) {
+		this.targetField = targetField;
+	}
+	
+	public void setEnterKeyListener(EnterKeyListener enterKeyListener) {
+		this.enterKeyListener = enterKeyListener;
 	}
 	
 	public JPanel getJPanel() {
@@ -123,6 +142,38 @@ public class Numpad {
 		button.setForeground(Color.white);
 
 		return button;
+	}
+	
+	private void numpadKeyPressHandle(String keyString) {
+		if(targetField == null)
+			throw new IllegalStateException("Target field is not set!");
+		
+		String key = keyString.split("_")[1];
+
+		int selectionStart = targetField.getSelectionStart();
+		int selectionEnd   = targetField.getSelectionEnd();
+
+		if(key.equalsIgnoreCase("backspace")) {
+			if(selectionStart != selectionEnd) {
+				targetField.setText(targetField.getText().substring(0, selectionStart) + targetField.getText().substring(selectionEnd));
+				targetField.setCaretPosition(selectionStart);
+			} else if(selectionStart > 0) {
+				targetField.setText(targetField.getText().substring(0, selectionStart - 1) + targetField.getText().substring(selectionEnd));
+				targetField.setCaretPosition(selectionStart - 1);
+			}
+
+			return;
+		}
+
+		if(key.equalsIgnoreCase("enter")) {
+			if(enterKeyListener != null)
+				enterKeyListener.onEnterPress();
+				
+			return;
+		}
+
+		targetField.setText(targetField.getText().substring(0, selectionStart) + key + targetField.getText().substring(selectionEnd));
+		targetField.setCaretPosition(selectionStart + key.length());
 	}
 
 	public enum Key {

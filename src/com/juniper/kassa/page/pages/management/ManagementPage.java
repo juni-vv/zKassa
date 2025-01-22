@@ -7,7 +7,6 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 
 import com.juniper.kassa.network.controller.product.ProductController;
@@ -18,8 +17,8 @@ import com.juniper.kassa.swing.JButton;
 import com.juniper.kassa.swing.JPanel;
 import com.juniper.kassa.swing.JTextField;
 import com.juniper.kassa.swing.custom.Gradient;
-import com.juniper.kassa.swing.custom.Numpad;
 import com.juniper.kassa.swing.custom.Popup;
+import com.juniper.kassa.swing.custom.numpad.Numpad;
 
 public class ManagementPage implements Page {
 
@@ -112,9 +111,8 @@ public class ManagementPage implements Page {
 			searchProduct();
 		});
 
-		numpad.addKeyboardListener((keyEvent) -> {
-			numpadKeyPressHandle(keyEvent.getPressedKey().toString());
-		});
+		numpad.setTargetField(productCodeField);
+		numpad.setEnterKeyListener(() -> searchProduct());
 
 		_jPanel.add(signoutButton);
 		_jPanel.add(keyboardPanel);
@@ -124,23 +122,7 @@ public class ManagementPage implements Page {
 		_jPanel.add(mRegistersButton);
 	}
 
-	private void numpadKeyPressHandle(String keyString) {
-		String key = keyString.split("_")[1];
-
-		if(key.equalsIgnoreCase("backspace")) {
-			if(productCodeField.getText().length() > 0)
-				productCodeField.setText(productCodeField.getText().substring(0, productCodeField.getText().length() - 1));
-
-			return;
-		}
-
-		if(key.equalsIgnoreCase("enter")) {
-			searchProduct();
-			return;
-		}
-
-		productCodeField.setText(productCodeField.getText() + key);
-	}
+	
 
 	private void searchProduct() {
 		ProductController productController = new ProductController();
@@ -158,7 +140,7 @@ public class ManagementPage implements Page {
 		}
 
 		productTitle.setText(productInfo.getName());
-		
+
 		productPanel.setVisible(true);
 
 		// TODO: Search product, add information

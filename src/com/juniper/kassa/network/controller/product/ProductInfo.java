@@ -6,13 +6,15 @@ public class ProductInfo {
 
 	private UUID   id;
 	private String name;
-	private double price;
-	private int    status;
 
-	public ProductInfo(UUID id, String name, double price, int status) {
+	private ProductPriceInfo priceInfo;
+
+	private int status;
+
+	public ProductInfo(UUID id, String name, ProductPriceInfo priceInfo, int status) {
 		this.id = id;
 		this.name = name;
-		this.price = price;
+		this.priceInfo = priceInfo;
 		this.status = status;
 	}
 
@@ -24,8 +26,8 @@ public class ProductInfo {
 		return name;
 	}
 
-	public double getPrice() {
-		return price;
+	public ProductPriceInfo getPriceInfo() {
+		return priceInfo;
 	}
 
 	public int getStatus() {

@@ -6,6 +6,7 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.DecimalFormat;
 
 import javax.swing.JLabel;
 
@@ -33,12 +34,13 @@ public class ManagementPage implements Page {
 
 	private JButton signoutButton    = new JButton("Sign out", 40);
 	private JButton deliveriesButton = new JButton("Deliveries", 15);
-	private JButton registersButton = new JButton("Registers", 15);
-	private JButton staffButton = new JButton("Staff", 15);
-	private JButton scheduleButton = new JButton("Schedules", 15);
+	private JButton registersButton  = new JButton("Registers", 15);
+	private JButton staffButton      = new JButton("Staff", 15);
+	private JButton scheduleButton   = new JButton("Schedules", 15);
 
-	private JLabel timeLabel    = new JLabel("01-01-2000 00:00:00");
-	private JLabel productTitle = new JLabel("{productTitle}");
+	private JLabel timeLabel      = new JLabel("01-01-2000 00:00:00");
+	private JLabel productTitle   = new JLabel("{productTitle}");
+	private JLabel productDeposit = new JLabel("");
 
 	private String jwt;
 
@@ -79,10 +81,15 @@ public class ManagementPage implements Page {
 		productTitle.setForeground(Color.white);
 		productTitle.setBounds(10, 10, productPanel.getPreferredSize().width - 20, productTitle.getPreferredSize().height);
 
+		productDeposit.setFont(_defaultFont);
+		productDeposit.setForeground(Color.white);
+		productDeposit.setBounds(10, 10 + productTitle.getPreferredSize().height, productPanel.getPreferredSize().width - 20, productTitle.getPreferredSize().height);
+
 		productPanel.add(productTitle);
+		productPanel.add(productDeposit);
 
 		int mButtonsWidth = numpad.getWidth() / 2 - 15, mButtonsHeight = 50;
-		
+
 		deliveriesButton.setPreferredSize(new Dimension(mButtonsWidth, mButtonsHeight));
 		deliveriesButton.setFont(_defaultFont);
 		deliveriesButton.setFocusPainted(false);
@@ -98,7 +105,7 @@ public class ManagementPage implements Page {
 		registersButton.setColor(new Color(237, 237, 237, 150));
 		registersButton.setArmedColor(new Color(237, 237, 237, 200));
 		registersButton.setBounds(width - mButtonsWidth - mButtonsWidth - 20, 10, mButtonsWidth, mButtonsHeight);
-		
+
 		staffButton.setPreferredSize(new Dimension(mButtonsWidth, mButtonsHeight));
 		staffButton.setFont(_defaultFont);
 		staffButton.setFocusPainted(false);
@@ -106,7 +113,7 @@ public class ManagementPage implements Page {
 		staffButton.setColor(new Color(237, 237, 237, 150));
 		staffButton.setArmedColor(new Color(237, 237, 237, 200));
 		staffButton.setBounds(width - mButtonsWidth - mButtonsWidth - 20, 20 + mButtonsHeight, mButtonsWidth, mButtonsHeight);
-		
+
 		scheduleButton.setPreferredSize(new Dimension(mButtonsWidth, mButtonsHeight));
 		scheduleButton.setFont(_defaultFont);
 		scheduleButton.setFocusPainted(false);
@@ -157,7 +164,28 @@ public class ManagementPage implements Page {
 			return;
 		}
 
-		productTitle.setText(productInfo.getName());
+		DecimalFormat df = new DecimalFormat("0.00");
+
+		productTitle.setText(productInfo.getName() + " - $" + productInfo.getPriceInfo().getPrice());
+
+		productDeposit.setVisible(false);
+		productDeposit.setText("");
+		if(productInfo.getPriceInfo().hasDeposit()) {
+			productDeposit.setText("Deposit: $" + df.format(productInfo.getPriceInfo().getDeposit()));
+			productDeposit.setVisible(true);
+		}
+		if(productInfo.getPriceInfo().hasPlasticTax()) {
+			if(productInfo.getPriceInfo().hasDeposit())
+				productDeposit.setText(productDeposit.getText() + " - ");
+
+			productDeposit.setText(productDeposit.getText() + "Plastic Tax: $" + df.format(productInfo.getPriceInfo().getPlasticTax()));
+			productDeposit.setVisible(true);
+		}
+
+		if(productInfo.getPriceInfo().hasDeposit() || productInfo.getPriceInfo().hasPlasticTax())
+			productDeposit.setText(productDeposit.getText() + " - ");
+
+		productDeposit.setText(productDeposit.getText() + "Tax: " + (int) (100 * productInfo.getPriceInfo().getTaxPercentage()) + "% ($" + df.format((productInfo.getPriceInfo().getPrice() * productInfo.getPriceInfo().getTaxPercentage())) + ")");
 
 		productPanel.setVisible(true);
 

@@ -40,13 +40,13 @@ public class CashierPage implements Page {
 		_jPanel.setLayout(null);
 
 		keyboardPanel.add(numpad.getJPanel());
-		
+
 		timeLabel.setFont(_footerFont);
 		timeLabel.setForeground(Color.white);
 		timeLabel.setBounds(width - timeLabel.getPreferredSize().width - 10, height - timeLabel.getPreferredSize().height - 10, timeLabel.getPreferredSize().width, timeLabel.getPreferredSize().height);
 
 		_jPanel.add(timeLabel);
-		
+
 		int signoutWidth = numpad.getWidth() - 20, signoutHeight = 50;
 		signoutButton.setPreferredSize(new Dimension(signoutWidth, signoutHeight));
 		signoutButton.setFont(_defaultFont);
@@ -55,10 +55,10 @@ public class CashierPage implements Page {
 		signoutButton.setColor(new Color(237, 237, 237, 150));
 		signoutButton.setArmedColor(new Color(237, 237, 237, 200));
 		signoutButton.setBounds(width - signoutWidth - 10, height - signoutHeight - 10 - timeLabel.getPreferredSize().height, signoutWidth, signoutHeight);
-		signoutButton.addActionListener(signOut());
+		signoutButton.addActionListener((ActionEvent e) -> signOut());
 
 		keyboardPanel.setBounds(width - numpad.getWidth(), signoutButton.getBounds().y - keyboardPanel.getPreferredSize().height, numpad.getWidth(), numpad.getHeight());
-		
+
 		int codeWidth = numpad.getWidth() - 20, codeHeight = 50;
 		productCodeField = new JTextField("Product code:");
 		productCodeField.setPreferredSize(new Dimension(codeWidth, codeHeight));
@@ -86,11 +86,9 @@ public class CashierPage implements Page {
 		// TODO: Search product, add line
 	}
 
-	private ActionListener signOut() {
-		return (ActionEvent e) -> {
-			jwt = null;
-			PageHandler.switchPage("loginPage");
-		};
+	private void signOut() {
+		jwt = null;
+		PageHandler.switchPage("loginPage");
 	}
 
 	@Override

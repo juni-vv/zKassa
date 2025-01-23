@@ -135,7 +135,7 @@ public class LoginPage implements Page {
 		if(result.getType() == Type.Success) {
 			String jwt = result.getToken();
 			if(jwt != null) {
-				String page = "managementPage";
+				String page = "storeManagementPage";
 				PageHandler.sendWebToken(page, jwt);
 				PageHandler.switchPage(page);
 				return;

@@ -29,7 +29,7 @@ public class ProductController extends Controller {
 				JSONObject responseObject = new JSONObject(response.body());
 				
 				ProductPriceInfo priceInfo = new ProductPriceInfo(responseObject.getDouble("price"), responseObject.getDouble("deposit"), responseObject.getDouble("plasticTax"), responseObject.getDouble("salesTax"));
-				return new ProductInfo(UUID.fromString(responseObject.getString("id")), responseObject.getString("name"), priceInfo, /*status*/0);
+				return new ProductInfo(UUID.fromString(responseObject.getString("id")), responseObject.getString("name"), priceInfo, ProductStatus.fromInt(responseObject.getInt("productStatus")));
 			} catch(Exception e) {
 				e.printStackTrace();
 			}

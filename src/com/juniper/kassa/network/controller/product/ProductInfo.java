@@ -9,9 +9,9 @@ public class ProductInfo {
 
 	private ProductPriceInfo priceInfo;
 
-	private int status;
+	private ProductStatus status;
 
-	public ProductInfo(UUID id, String name, ProductPriceInfo priceInfo, int status) {
+	public ProductInfo(UUID id, String name, ProductPriceInfo priceInfo, ProductStatus status) {
 		this.id = id;
 		this.name = name;
 		this.priceInfo = priceInfo;
@@ -30,7 +30,7 @@ public class ProductInfo {
 		return priceInfo;
 	}
 
-	public int getStatus() {
+	public ProductStatus getStatus() {
 		return status;
 	}
 

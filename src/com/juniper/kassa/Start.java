@@ -4,7 +4,7 @@ import com.juniper.kassa.page.PageHandler;
 import com.juniper.kassa.page.pages.CashierPage;
 import com.juniper.kassa.page.pages.LoginPage;
 import com.juniper.kassa.page.pages.management.ManageRegistersPage;
-import com.juniper.kassa.page.pages.management.ManagementPage;
+import com.juniper.kassa.page.pages.management.StoreManagementPage;
 
 public class Start {
 
@@ -13,7 +13,7 @@ public class Start {
 
 		PageHandler.addPage("loginPage", new LoginPage());
 		PageHandler.addPage("cashierPage", new CashierPage());
-		PageHandler.addPage("managementPage", new ManagementPage());
+		PageHandler.addPage("storeManagementPage", new StoreManagementPage());
 		PageHandler.addPage("manageRegistersPage", new ManageRegistersPage());
 		PageHandler.switchPage("loginPage");
 	}

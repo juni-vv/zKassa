@@ -21,7 +21,7 @@ import com.juniper.kassa.swing.custom.Gradient;
 import com.juniper.kassa.swing.custom.Popup;
 import com.juniper.kassa.swing.custom.numpad.Numpad;
 
-public class ManagementPage implements Page {
+public class StoreManagementPage implements Page {
 
 	private JPanel _jPanel;
 
@@ -40,7 +40,8 @@ public class ManagementPage implements Page {
 
 	private JLabel timeLabel      = new JLabel("01-01-2000 00:00:00");
 	private JLabel productTitle   = new JLabel("{productTitle}");
-	private JLabel productDeposit = new JLabel("");
+	private JLabel productDeposit = new JLabel("{productDeposit}");
+	private JLabel productStatus  = new JLabel("{productStatus}");
 
 	private String jwt;
 
@@ -68,7 +69,7 @@ public class ManagementPage implements Page {
 		signoutButton.setColor(new Color(237, 237, 237, 150));
 		signoutButton.setArmedColor(new Color(237, 237, 237, 200));
 		signoutButton.setBounds(width - signoutWidth - 10, height - signoutHeight - 10 - timeLabel.getPreferredSize().height, signoutWidth, signoutHeight);
-		signoutButton.addActionListener(signOut());
+		signoutButton.addActionListener((ActionEvent e) -> signOut());
 
 		keyboardPanel.setBounds(width - numpad.getWidth(), signoutButton.getBounds().y - keyboardPanel.getPreferredSize().height, numpad.getWidth(), numpad.getHeight());
 
@@ -83,10 +84,15 @@ public class ManagementPage implements Page {
 
 		productDeposit.setFont(_defaultFont);
 		productDeposit.setForeground(Color.white);
-		productDeposit.setBounds(10, 10 + productTitle.getPreferredSize().height, productPanel.getPreferredSize().width - 20, productTitle.getPreferredSize().height);
+		productDeposit.setBounds(10, 10 + productTitle.getPreferredSize().height, productPanel.getPreferredSize().width - 20, productDeposit.getPreferredSize().height);
 
+		productStatus.setFont(_defaultFont);
+		productStatus.setForeground(Color.white);
+		productStatus.setBounds(10, 40 + productTitle.getBounds().y + productTitle.getBounds().height, productPanel.getPreferredSize().width - 20, productStatus.getPreferredSize().height);
+		
 		productPanel.add(productTitle);
 		productPanel.add(productDeposit);
+		productPanel.add(productStatus);
 
 		int mButtonsWidth = numpad.getWidth() / 2 - 15, mButtonsHeight = 50;
 
@@ -105,7 +111,7 @@ public class ManagementPage implements Page {
 		registersButton.setColor(new Color(237, 237, 237, 150));
 		registersButton.setArmedColor(new Color(237, 237, 237, 200));
 		registersButton.setBounds(width - mButtonsWidth - mButtonsWidth - 20, 10, mButtonsWidth, mButtonsHeight);
-		registersButton.addActionListener(registersPage());
+		registersButton.addActionListener((ActionEvent e) -> registersPage());
 
 		staffButton.setPreferredSize(new Dimension(mButtonsWidth, mButtonsHeight));
 		staffButton.setFont(_defaultFont);
@@ -184,25 +190,22 @@ public class ManagementPage implements Page {
 			productDeposit.setText(productDeposit.getText() + " - ");
 
 		productDeposit.setText(productDeposit.getText() + "Tax: " + (int) (100 * productInfo.getPriceInfo().getTaxPercentage()) + "% ($" + df.format((productInfo.getPriceInfo().getPrice() * productInfo.getPriceInfo().getTaxPercentage())) + ")");
+		productStatus.setText("Status: " + productInfo.getStatus().toString());
 
 		productPanel.setVisible(true);
 	}
 
-	private ActionListener signOut() {
-		return (ActionEvent e) -> {
-			jwt = null;
-			productCodeField.setText("");
-			productPanel.setVisible(false);
-			PageHandler.switchPage("loginPage");
-		};
+	private void signOut() {
+		jwt = null;
+		productCodeField.setText("");
+		productPanel.setVisible(false);
+		PageHandler.switchPage("loginPage");
 	}
 
-	private ActionListener registersPage() {
-		return (ActionEvent e) -> {
-			productCodeField.setText("");
-			productPanel.setVisible(false);
-			PageHandler.switchPage("manageRegistersPage");
-		};
+	private void registersPage() {
+		productCodeField.setText("");
+		productPanel.setVisible(false);
+		PageHandler.switchPage("manageRegistersPage");
 	}
 
 	@Override

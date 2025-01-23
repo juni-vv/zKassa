@@ -105,6 +105,7 @@ public class ManagementPage implements Page {
 		registersButton.setColor(new Color(237, 237, 237, 150));
 		registersButton.setArmedColor(new Color(237, 237, 237, 200));
 		registersButton.setBounds(width - mButtonsWidth - mButtonsWidth - 20, 10, mButtonsWidth, mButtonsHeight);
+		registersButton.addActionListener(registersPage());
 
 		staffButton.setPreferredSize(new Dimension(mButtonsWidth, mButtonsHeight));
 		staffButton.setFont(_defaultFont);
@@ -132,9 +133,7 @@ public class ManagementPage implements Page {
 		productCodeField.setCornerRadius(10);
 		productCodeField.setBorderColor(new Color(0xEF4550));
 		productCodeField.setBounds(width - codeWidth - 10, keyboardPanel.getBounds().y - codeHeight, codeWidth, codeHeight);
-		productCodeField.addActionListener((ActionEvent e) -> {
-			searchProduct();
-		});
+		productCodeField.addActionListener((ActionEvent e) -> searchProduct());
 
 		numpad.setTargetField(productCodeField);
 		numpad.setEnterKeyListener(() -> searchProduct());
@@ -165,7 +164,6 @@ public class ManagementPage implements Page {
 		}
 
 		DecimalFormat df = new DecimalFormat("0.00");
-
 		productTitle.setText(productInfo.getName() + " - $" + productInfo.getPriceInfo().getPrice());
 
 		productDeposit.setVisible(false);
@@ -188,8 +186,6 @@ public class ManagementPage implements Page {
 		productDeposit.setText(productDeposit.getText() + "Tax: " + (int) (100 * productInfo.getPriceInfo().getTaxPercentage()) + "% ($" + df.format((productInfo.getPriceInfo().getPrice() * productInfo.getPriceInfo().getTaxPercentage())) + ")");
 
 		productPanel.setVisible(true);
-
-		// TODO: Search product, add information
 	}
 
 	private ActionListener signOut() {
@@ -198,6 +194,14 @@ public class ManagementPage implements Page {
 			productCodeField.setText("");
 			productPanel.setVisible(false);
 			PageHandler.switchPage("loginPage");
+		};
+	}
+
+	private ActionListener registersPage() {
+		return (ActionEvent e) -> {
+			productCodeField.setText("");
+			productPanel.setVisible(false);
+			PageHandler.switchPage("manageRegistersPage");
 		};
 	}
 

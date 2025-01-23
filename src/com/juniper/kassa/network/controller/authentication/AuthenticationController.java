@@ -28,13 +28,10 @@ public class AuthenticationController extends Controller {
 			HttpResponse<String> response = HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
 			
 			if(response.statusCode() == 200)
-				return new LoginResult(Type.Success, response);
-			
-			System.out.println(response.statusCode());
-			
+				return new LoginResult(Type.Success, response);		
 			
 		} catch(ConnectException ce) {
-			return new LoginResult(Type.NoConnection, null);
+			return new LoginResult(Type.NoConnection, null, ce);
 		} catch(IOException | InterruptedException e) {
 			e.printStackTrace();
 		}

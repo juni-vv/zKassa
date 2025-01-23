@@ -67,7 +67,7 @@ public class LoginPage implements Page {
 		int passwordFieldY = height / 5 + titleLabel.getPreferredSize().height + 20;
 		passwordField.setBounds(passwordFieldX, passwordFieldY, passwordField.getPreferredSize().width, passwordField.getPreferredSize().height);
 
-		passwordField.addActionListener(loginButtonPressed());
+		passwordField.addActionListener((ActionEvent e) -> attemptLogin());
 		passwordField.addFocusListener(inputFieldsClicked());
 		
 		/* Access denied label */
@@ -87,7 +87,7 @@ public class LoginPage implements Page {
 		int loginButtonY = height / 5 + titleLabel.getPreferredSize().height + passwordField.getPreferredSize().height + 30;
 		loginButton.setBounds(loginButtonX, loginButtonY, loginButton.getPreferredSize().width, loginButton.getPreferredSize().height);
 
-		loginButton.addActionListener(loginButtonPressed());
+		loginButton.addActionListener((ActionEvent e) -> attemptLogin());
 
 		/* Keyboard */
 		keyboardPanel.add(numpad.getJPanel());
@@ -126,18 +126,12 @@ public class LoginPage implements Page {
 		};
 	}
 
-	private ActionListener loginButtonPressed() {
-		return (ActionEvent actionEvent) -> {
-			attemptLogin();
-		};
-	}
-
 	private void attemptLogin() {
 		AuthenticationController authController = new AuthenticationController();
 		LoginResult              result         = authController.attemptLogin(new String(passwordField.getPassword()));
 
 		passwordField.setText("");
-
+		
 		if(result.getType() == Type.Success) {
 			String jwt = result.getToken();
 			if(jwt != null) {
@@ -159,6 +153,8 @@ public class LoginPage implements Page {
 		if(result.getType() == Type.NoConnection) {
 			accessDeniedLabel.setText("Could not connect, contact the system admin.");
 			accessDeniedLabel.setBounds((int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 2 - accessDeniedLabel.getPreferredSize().width / 2), accessDeniedLabel.getBounds().y, accessDeniedLabel.getBounds().width, accessDeniedLabel.getBounds().height);
+			
+			result.getConnectionException().printStackTrace();
 			
 			passwordField.setBorderVisible(true);
 			passwordField.repaint();

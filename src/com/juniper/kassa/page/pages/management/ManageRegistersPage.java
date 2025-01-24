@@ -2,6 +2,7 @@ package com.juniper.kassa.page.pages.management;
 
 import javax.swing.JPanel;
 
+import com.juniper.kassa.model.User;
 import com.juniper.kassa.page.Page;
 
 public class ManageRegistersPage implements Page {
@@ -30,7 +31,7 @@ public class ManageRegistersPage implements Page {
 	}
 
 	@Override
-	public void setWebToken(String token) {
+	public void setUser(User user) {
 		
 	}
 

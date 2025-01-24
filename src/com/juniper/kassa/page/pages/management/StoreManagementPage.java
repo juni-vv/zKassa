@@ -5,13 +5,14 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 
 import javax.swing.JLabel;
 
+import com.juniper.kassa.model.User;
 import com.juniper.kassa.network.controller.product.ProductController;
 import com.juniper.kassa.network.controller.product.ProductInfo;
+import com.juniper.kassa.network.controller.product.ProductStatus;
 import com.juniper.kassa.page.Page;
 import com.juniper.kassa.page.PageHandler;
 import com.juniper.kassa.swing.JButton;
@@ -43,7 +44,7 @@ public class StoreManagementPage implements Page {
 	private JLabel productDeposit = new JLabel("{productDeposit}");
 	private JLabel productStatus  = new JLabel("{productStatus}");
 
-	private String jwt;
+	private User currentUser;
 
 	@Override
 	public void populate() {
@@ -156,7 +157,7 @@ public class StoreManagementPage implements Page {
 
 	private void searchProduct() {
 		ProductController productController = new ProductController();
-		ProductInfo       productInfo       = productController.getProduct(productCodeField.getText(), jwt);
+		ProductInfo       productInfo       = productController.getProduct(productCodeField.getText(), currentUser.getToken());
 
 		productCodeField.requestFocus();
 		productCodeField.selectAll();
@@ -190,13 +191,19 @@ public class StoreManagementPage implements Page {
 			productDeposit.setText(productDeposit.getText() + " - ");
 
 		productDeposit.setText(productDeposit.getText() + "Tax: " + (int) (100 * productInfo.getPriceInfo().getTaxPercentage()) + "% ($" + df.format((productInfo.getPriceInfo().getPrice() * productInfo.getPriceInfo().getTaxPercentage())) + ")");
-		productStatus.setText("Status: " + productInfo.getStatus().toString());
-
+		
+		if(!productInfo.getStatus().equals(ProductStatus.Active)) {
+			productStatus.setText("Status: " + productInfo.getStatus().toString());
+			productStatus.setVisible(true);
+		} else {
+			productStatus.setVisible(false);
+		}
+		
 		productPanel.setVisible(true);
 	}
 
 	private void signOut() {
-		jwt = null;
+		currentUser = null;
 		productCodeField.setText("");
 		productPanel.setVisible(false);
 		PageHandler.switchPage("loginPage");
@@ -209,8 +216,8 @@ public class StoreManagementPage implements Page {
 	}
 
 	@Override
-	public void setWebToken(String token) {
-		jwt = token;
+	public void setUser(User user) {
+		currentUser = user;
 	}
 
 	@Override

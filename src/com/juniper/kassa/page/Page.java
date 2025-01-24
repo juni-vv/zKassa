@@ -4,6 +4,7 @@ import java.awt.Font;
 
 import javax.swing.JPanel;
 
+import com.juniper.kassa.model.User;
 import com.juniper.kassa.swing.custom.FontManager;
 
 public interface Page {
@@ -22,6 +23,6 @@ public interface Page {
 
 	public JPanel getPanel();
 
-	public void setWebToken(String token);
+	public void setUser(User user);
 
 }

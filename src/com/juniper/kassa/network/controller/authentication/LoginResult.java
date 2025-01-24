@@ -5,6 +5,8 @@ import java.net.http.HttpResponse;
 
 import org.json.JSONObject;
 
+import com.juniper.kassa.model.UserRole;
+
 public class LoginResult {
 
 	private final Type                 type;
@@ -30,6 +32,11 @@ public class LoginResult {
 	public String getToken() {
 		JSONObject responseObject = new JSONObject(response.body());
 		return responseObject.getString("jwt");
+	}
+	
+	public UserRole getUserRole() {
+		JSONObject responseObject = new JSONObject(response.body());
+		return UserRole.fromInt(responseObject.getInt("role"));
 	}
 
 	public enum Type {

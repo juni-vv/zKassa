@@ -5,10 +5,10 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JLabel;
 
+import com.juniper.kassa.model.User;
 import com.juniper.kassa.page.Page;
 import com.juniper.kassa.page.PageHandler;
 import com.juniper.kassa.swing.JButton;
@@ -29,7 +29,7 @@ public class CashierPage implements Page {
 
 	private JLabel timeLabel = new JLabel("01-01-2000 00:00:00");
 
-	private String jwt;
+	private User currentUser;
 
 	@Override
 	public void populate() {
@@ -87,7 +87,7 @@ public class CashierPage implements Page {
 	}
 
 	private void signOut() {
-		jwt = null;
+		currentUser = null;
 		PageHandler.switchPage("loginPage");
 	}
 
@@ -107,8 +107,8 @@ public class CashierPage implements Page {
 	}
 
 	@Override
-	public void setWebToken(String token) {
-		jwt = token;
+	public void setUser(User user) {
+		currentUser = user;
 	}
 
 }

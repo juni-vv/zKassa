@@ -8,6 +8,8 @@ import java.util.Map;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import com.juniper.kassa.model.User;
+
 public class PageHandler {
 
 	private static JFrame _jFrame;
@@ -55,10 +57,10 @@ public class PageHandler {
 		System.out.println("Page \"" + name + "\" was not found.");
 	}
 	
-	public static void sendWebToken(String name, String token) {
-		Page page = _pages.get(name);
+	public static void sendUser(String pageName, User user) {
+		Page page = _pages.get(pageName);
 		if(page != null) {
-			page.setWebToken(token);
+			page.setUser(user);
 		}
 	}
 

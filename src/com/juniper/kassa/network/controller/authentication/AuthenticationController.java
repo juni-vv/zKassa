@@ -16,11 +16,12 @@ import com.juniper.kassa.network.controller.authentication.LoginResult.Type;
 
 public class AuthenticationController extends Controller {
 
-	public LoginResult attemptLogin(String passcode) {
+	public LoginResult attemptLogin(String username, String password) {
 		String route = "/Authentication/Login";
 
 		JSONObject json = new JSONObject();
-		json.put("userName", passcode);
+		json.put("userName", username);
+		json.put("password", password);
 
 		HttpRequest request = postRequest(route, json);
 		

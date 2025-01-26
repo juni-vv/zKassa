@@ -13,12 +13,11 @@ public class Start {
 	public static void main(String[] args) {
 		PageHandler.init();
 
-		PageHandler.addPage("loginPage", new LoginPage());
 		PageHandler.addPage("cashierPage", new CashierPage());
 		PageHandler.addPage("storeManagementPage", new StoreManagementPage());
 		PageHandler.addPage("manageRegistersPage", new ManageRegistersPage());
-		PageHandler.addPage("productManagementPage", new ProductManagementPage());
-		PageHandler.switchPage("loginPage");
+		
+		PageHandler.openPage(new LoginPage(null));
 	}
 
 }

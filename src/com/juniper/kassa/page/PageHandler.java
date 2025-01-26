@@ -2,7 +2,9 @@ package com.juniper.kassa.page;
 
 import java.awt.CardLayout;
 import java.awt.Toolkit;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JFrame;
@@ -17,6 +19,8 @@ public class PageHandler {
 
 	private static CardLayout        _cardLayout;
 	private static Map<String, Page> _pages;
+	
+	private static List<NewPage> _newPages;
 
 	public static void init() {
 		if(_jFrame == null) {
@@ -33,6 +37,7 @@ public class PageHandler {
 			
 			_jPagesPanel.setLayout(_cardLayout);
 			_pages = new HashMap<String, Page>();
+			_newPages = new ArrayList<NewPage>();
 			_jFrame.add(_jPagesPanel);
 		}
 	}
@@ -44,20 +49,18 @@ public class PageHandler {
 		_jPagesPanel.add(page.getPanel(), name);
 	}
 	
-	public static void switchPage(Page page) {
-		if(!_pages.containsValue(page)) {
-			addPage("temp", page);
-			switchPage("temp");
-			
-			_pages.remove("temp");
-			_jPagesPanel.remove(page.getPanel());
-		} else {
-			for(String key : _pages.keySet())
-				if(_pages.get(key) == page)
-					switchPage(key);
-		}
+	public static void openPage(NewPage page) {
+		_jPagesPanel.add(page.getPanel(), "page");
+		_jFrame.setVisible(true);
+		page.open();
 		
-		
+		_cardLayout.show(_jPagesPanel, "page");
+		page.start();
+	}
+	
+	public static void closePage(NewPage page) {
+		_jPagesPanel.remove(page.getPanel());
+		page.close();
 	}
 
 	public static void switchPage(String name) {

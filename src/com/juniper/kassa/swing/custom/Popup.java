@@ -16,7 +16,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import com.juniper.kassa.page.Page;
+import com.juniper.kassa.page.NewPage;
 import com.juniper.kassa.swing.JButton;
 import com.juniper.kassa.swing.JPanel;
 
@@ -25,13 +25,13 @@ public class Popup {
 	private JFrame frame = new JFrame("Message");
 
 	private String title, message;
-	private Page   parent;
+	private NewPage   parent;
 	
 	private JComponent nextFocus = null;
 	
 	private boolean open = false;
 
-	public Popup(Page parent, String title, String message) {
+	public Popup(NewPage parent, String title, String message) {
 		this.title = title;
 		this.message = message;
 

@@ -12,8 +12,9 @@ import javax.swing.JLabel;
 import com.juniper.kassa.model.User;
 import com.juniper.kassa.model.product.AdvancedProductInfo;
 import com.juniper.kassa.network.controller.product.ProductController;
-import com.juniper.kassa.page.Page;
+import com.juniper.kassa.page.NewPage;
 import com.juniper.kassa.page.PageHandler;
+import com.juniper.kassa.page.pages.LoginPage;
 import com.juniper.kassa.swing.JButton;
 import com.juniper.kassa.swing.JPanel;
 import com.juniper.kassa.swing.JTextField;
@@ -21,7 +22,15 @@ import com.juniper.kassa.swing.custom.Gradient;
 import com.juniper.kassa.swing.custom.Popup;
 import com.juniper.kassa.swing.custom.numpad.Numpad;
 
-public class ProductManagementPage implements Page {
+public class ProductManagementPage extends NewPage {
+
+	public ProductManagementPage(User user) {
+		super(user);
+
+		this._jPanel = new JPanel();
+		
+		productCodeField.requestFocus();
+	}
 
 	private JPanel _jPanel;
 
@@ -39,10 +48,10 @@ public class ProductManagementPage implements Page {
 	private JLabel productDeposit = new JLabel("{productDeposit}");
 	private JLabel productId      = new JLabel("{productId}");
 
-	private User currentUser;
+	private AdvancedProductInfo productInfo;
 
 	@Override
-	public void populate() {
+	public void open() {
 		int width  = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		int height = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 
@@ -121,8 +130,8 @@ public class ProductManagementPage implements Page {
 	}
 
 	private void searchProduct() {
-		ProductController   productController = new ProductController();
-		AdvancedProductInfo productInfo       = productController.getAdvancedProductInfo(productCodeField.getText(), currentUser.getToken());
+		ProductController productController = new ProductController();
+		productInfo = productController.getAdvancedProductInfo(productCodeField.getText(), currentUser.getToken());
 
 		productCodeField.requestFocus();
 		productCodeField.selectAll();
@@ -158,39 +167,36 @@ public class ProductManagementPage implements Page {
 		productDeposit.setText(productDeposit.getText() + "Tax: " + (int) (100 * productInfo.getPriceInfo().getTaxPercentage()) + "% ($" + df.format((productInfo.getPriceInfo().getPrice() * productInfo.getPriceInfo().getTaxPercentage())) + ")");
 
 		productId.setText("ID: " + productInfo.getId().toString());
-		
+
 		productPanel.setVisible(true);
 	}
 
 	private void changeProductStatus() {
-		//PageHandler.switchPage("key");
+		if(productInfo != null)
+			PageHandler.openPage(new ChangeProductStatusPage(currentUser, productInfo));
 	}
 
 	private void signOut() {
 		currentUser = null;
 		productCodeField.setText("");
 		productPanel.setVisible(false);
-		PageHandler.switchPage("loginPage");
-	}
-
-	@Override
-	public void setUser(User user) {
-		currentUser = user;
-	}
-
-	@Override
-	public void resume() {
-		productCodeField.requestFocus();
-	}
-
-	@Override
-	public void init() {
-		_jPanel = new JPanel();
+		PageHandler.openPage(new LoginPage(null));
 	}
 
 	@Override
 	public JPanel getPanel() {
 		return _jPanel;
+	}
+
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void start() {
+		productCodeField.requestFocus();
 	}
 
 }

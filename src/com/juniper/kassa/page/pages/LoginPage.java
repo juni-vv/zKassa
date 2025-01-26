@@ -15,8 +15,9 @@ import com.juniper.kassa.model.UserRole;
 import com.juniper.kassa.network.controller.authentication.AuthenticationController;
 import com.juniper.kassa.network.controller.authentication.LoginResult;
 import com.juniper.kassa.network.controller.authentication.LoginResult.Type;
-import com.juniper.kassa.page.Page;
+import com.juniper.kassa.page.NewPage;
 import com.juniper.kassa.page.PageHandler;
+import com.juniper.kassa.page.pages.headoffice.ProductManagementPage;
 import com.juniper.kassa.swing.JButton;
 import com.juniper.kassa.swing.JPanel;
 import com.juniper.kassa.swing.JPasswordField;
@@ -25,7 +26,7 @@ import com.juniper.kassa.swing.custom.Gradient;
 import com.juniper.kassa.swing.custom.Popup;
 import com.juniper.kassa.swing.custom.numpad.Numpad;
 
-public class LoginPage implements Page {
+public class LoginPage extends NewPage {
 
 	private JPanel _jPanel;
 
@@ -41,9 +42,15 @@ public class LoginPage implements Page {
 	private JPanel keyboardPanel = new JPanel();
 
 	private Numpad numpad = new Numpad(15);
+	
+	public LoginPage(User user) {
+		super(user);
+		
+		_jPanel = new JPanel();
+	}
 
 	@Override
-	public void populate() {
+	public void open() {
 		int width  = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		int height = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 
@@ -93,7 +100,8 @@ public class LoginPage implements Page {
 		accessDeniedLabel.setFont(_errorFont);
 		accessDeniedLabel.setForeground(new Color(0xEF4550));
 		accessDeniedLabel.setBounds(width / 2 - accessDeniedLabel.getPreferredSize().width / 2, usernameField.getBounds().y - accessDeniedLabel.getPreferredSize().height, width, accessDeniedLabel.getPreferredSize().height);
-
+		accessDeniedLabel.setVisible(false);
+		
 		/* Login button */
 		loginButton.setPreferredSize(new Dimension(400, 50));
 		loginButton.setFont(_defaultFont);
@@ -126,6 +134,8 @@ public class LoginPage implements Page {
 		_jPanel.add(loginButton);
 		_jPanel.add(titleLabel);
 		_jPanel.add(accessDeniedLabel);
+		
+		usernameField.requestFocus();
 	}
 
 	private FocusListener inputFieldsClicked() {
@@ -168,10 +178,12 @@ public class LoginPage implements Page {
 					String page = "storeManagementPage";
 					PageHandler.sendUser(page, user);
 					PageHandler.switchPage(page);
+					PageHandler.closePage(this);
 				}
 
 				if(result.getUserRole() == UserRole.Cashier || result.getUserRole() == UserRole.SCO || result.getUserRole() == UserRole.Service || result.getUserRole() == UserRole.TeamLead) {
 					String page = "cashierPage";
+					PageHandler.closePage(this);
 					PageHandler.sendUser(page, user);
 					PageHandler.switchPage(page);
 				}
@@ -179,7 +191,8 @@ public class LoginPage implements Page {
 				if(result.getUserRole() == UserRole.Store) {
 					accessDeniedLabel.setText("You don't have permission to perform this action.");
 					accessDeniedLabel.setBounds((int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 2 - accessDeniedLabel.getPreferredSize().width / 2), accessDeniedLabel.getBounds().y, accessDeniedLabel.getBounds().width, accessDeniedLabel.getBounds().height);
-
+					accessDeniedLabel.setVisible(true);
+					
 					passwordField.setBorderVisible(true);
 					passwordField.repaint();
 					
@@ -189,9 +202,8 @@ public class LoginPage implements Page {
 				}
 				
 				if(result.getUserRole() == UserRole.ProductManager) {
-					String page = "productManagementPage";
-					PageHandler.sendUser(page, user);
-					PageHandler.switchPage(page);
+					PageHandler.closePage(this);
+					PageHandler.openPage(new ProductManagementPage(user));
 				}
 
 				return;
@@ -201,7 +213,8 @@ public class LoginPage implements Page {
 		if(result.getType() == Type.NoPermission) {
 			accessDeniedLabel.setText("You don't have permission to perform this action.");
 			accessDeniedLabel.setBounds((int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 2 - accessDeniedLabel.getPreferredSize().width / 2), accessDeniedLabel.getBounds().y, accessDeniedLabel.getBounds().width, accessDeniedLabel.getBounds().height);
-
+			accessDeniedLabel.setVisible(true);
+			
 			passwordField.setBorderVisible(true);
 			passwordField.repaint();
 			
@@ -212,7 +225,8 @@ public class LoginPage implements Page {
 		if(result.getType() == Type.NoConnection) {
 			accessDeniedLabel.setText("Could not connect, contact the system admin.");
 			accessDeniedLabel.setBounds((int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 2 - accessDeniedLabel.getPreferredSize().width / 2), accessDeniedLabel.getBounds().y, accessDeniedLabel.getBounds().width, accessDeniedLabel.getBounds().height);
-
+			accessDeniedLabel.setVisible(true);
+			
 			result.getConnectionException().printStackTrace();
 
 			passwordField.setBorderVisible(true);
@@ -229,23 +243,18 @@ public class LoginPage implements Page {
 	}
 
 	@Override
-	public void setUser(User user) {
-
-	}
-
-	@Override
-	public void resume() {
-		usernameField.requestFocus();
-	}
-
-	@Override
-	public void init() {
-		_jPanel = new JPanel();
-	}
-
-	@Override
 	public JPanel getPanel() {
 		return _jPanel;
+	}
+
+	@Override
+	public void close() {
+		
+	}
+	
+	@Override
+	public void start() {
+		usernameField.requestFocus();
 	}
 
 }

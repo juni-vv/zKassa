@@ -23,7 +23,7 @@ public class PageHandler {
 			_jFrame = new JFrame();
 
 			_jFrame.setDefaultCloseOperation(3);
-			_jFrame.setTitle("STORE_NAME");
+			_jFrame.setTitle("zKassa");
 			_jFrame.setSize(Toolkit.getDefaultToolkit().getScreenSize());
 			_jFrame.setUndecorated(true);
 			_jFrame.setLocationRelativeTo(null);
@@ -42,6 +42,22 @@ public class PageHandler {
 		page.init();
 		page.populate();
 		_jPagesPanel.add(page.getPanel(), name);
+	}
+	
+	public static void switchPage(Page page) {
+		if(!_pages.containsValue(page)) {
+			addPage("temp", page);
+			switchPage("temp");
+			
+			_pages.remove("temp");
+			_jPagesPanel.remove(page.getPanel());
+		} else {
+			for(String key : _pages.keySet())
+				if(_pages.get(key) == page)
+					switchPage(key);
+		}
+		
+		
 	}
 
 	public static void switchPage(String name) {

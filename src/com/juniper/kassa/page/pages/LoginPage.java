@@ -170,7 +170,7 @@ public class LoginPage implements Page {
 					PageHandler.switchPage(page);
 				}
 
-				if(result.getUserRole() == UserRole.Cashier) {
+				if(result.getUserRole() == UserRole.Cashier || result.getUserRole() == UserRole.SCO || result.getUserRole() == UserRole.Service || result.getUserRole() == UserRole.TeamLead) {
 					String page = "cashierPage";
 					PageHandler.sendUser(page, user);
 					PageHandler.switchPage(page);
@@ -186,6 +186,12 @@ public class LoginPage implements Page {
 					usernameField.setBorderVisible(true);
 					usernameField.repaint();
 					return;
+				}
+				
+				if(result.getUserRole() == UserRole.ProductManager) {
+					String page = "productManagementPage";
+					PageHandler.sendUser(page, user);
+					PageHandler.switchPage(page);
 				}
 
 				return;

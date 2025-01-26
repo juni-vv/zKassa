@@ -1,4 +1,4 @@
-package com.juniper.kassa.page.pages.management;
+package com.juniper.kassa.page.pages.headoffice;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -10,8 +10,7 @@ import java.text.DecimalFormat;
 import javax.swing.JLabel;
 
 import com.juniper.kassa.model.User;
-import com.juniper.kassa.model.product.ProductInfo;
-import com.juniper.kassa.model.product.ProductStatus;
+import com.juniper.kassa.model.product.AdvancedProductInfo;
 import com.juniper.kassa.network.controller.product.ProductController;
 import com.juniper.kassa.page.Page;
 import com.juniper.kassa.page.PageHandler;
@@ -22,7 +21,7 @@ import com.juniper.kassa.swing.custom.Gradient;
 import com.juniper.kassa.swing.custom.Popup;
 import com.juniper.kassa.swing.custom.numpad.Numpad;
 
-public class StoreManagementPage implements Page {
+public class ProductManagementPage implements Page {
 
 	private JPanel _jPanel;
 
@@ -32,16 +31,13 @@ public class StoreManagementPage implements Page {
 	private Numpad     numpad           = new Numpad(15);
 	private JTextField productCodeField = new JTextField("Product code");
 
-	private JButton signoutButton    = new JButton("Sign out", 40);
-	private JButton deliveriesButton = new JButton("Deliveries", 15);
-	private JButton registersButton  = new JButton("Registers", 15);
-	private JButton staffButton      = new JButton("Staff", 15);
-	private JButton scheduleButton   = new JButton("Schedules", 15);
+	private JButton signoutButton = new JButton("Sign out", 40);
+	private JButton statusButton  = new JButton("Modify activity status", 15);
 
 	private JLabel timeLabel      = new JLabel("01-01-2000 00:00:00");
 	private JLabel productTitle   = new JLabel("{productTitle}");
 	private JLabel productDeposit = new JLabel("{productDeposit}");
-	private JLabel productStatus  = new JLabel("{productStatus}");
+	private JLabel productId      = new JLabel("{productId}");
 
 	private User currentUser;
 
@@ -86,48 +82,22 @@ public class StoreManagementPage implements Page {
 		productDeposit.setForeground(Color.white);
 		productDeposit.setBounds(10, 10 + productTitle.getPreferredSize().height, productPanel.getPreferredSize().width - 20, productDeposit.getPreferredSize().height);
 
-		productStatus.setFont(_defaultFont);
-		productStatus.setForeground(Color.white);
-		productStatus.setBounds(10, 40 + productTitle.getBounds().y + productTitle.getBounds().height, productPanel.getPreferredSize().width - 20, productStatus.getPreferredSize().height);
-		
+		productId.setFont(_defaultFont);
+		productId.setForeground(Color.white);
+		productId.setBounds(10, productDeposit.getBounds().y + productDeposit.getBounds().height, productPanel.getPreferredSize().width - 20, productId.getPreferredSize().height);
+
+		statusButton.setFont(_defaultFont);
+		statusButton.setFocusPainted(false);
+		statusButton.setForeground(Color.white);
+		statusButton.setColor(new Color(237, 237, 237, 150));
+		statusButton.setArmedColor(new Color(237, 237, 237, 200));
+		statusButton.setBounds(10, 20 + productId.getBounds().y + productId.getBounds().height, statusButton.getPreferredSize().width * 2, 35);
+		statusButton.addActionListener((ActionEvent e) -> changeProductStatus());
+
 		productPanel.add(productTitle);
 		productPanel.add(productDeposit);
-		productPanel.add(productStatus);
-
-		int mButtonsWidth = numpad.getWidth() / 2 - 15, mButtonsHeight = 50;
-
-		deliveriesButton.setPreferredSize(new Dimension(mButtonsWidth, mButtonsHeight));
-		deliveriesButton.setFont(_defaultFont);
-		deliveriesButton.setFocusPainted(false);
-		deliveriesButton.setForeground(Color.white);
-		deliveriesButton.setColor(new Color(237, 237, 237, 150));
-		deliveriesButton.setArmedColor(new Color(237, 237, 237, 200));
-		deliveriesButton.setBounds(width - mButtonsWidth - 10, 10, mButtonsWidth, mButtonsHeight);
-
-		registersButton.setPreferredSize(new Dimension(mButtonsWidth, mButtonsHeight));
-		registersButton.setFont(_defaultFont);
-		registersButton.setFocusPainted(false);
-		registersButton.setForeground(Color.white);
-		registersButton.setColor(new Color(237, 237, 237, 150));
-		registersButton.setArmedColor(new Color(237, 237, 237, 200));
-		registersButton.setBounds(width - mButtonsWidth - mButtonsWidth - 20, 10, mButtonsWidth, mButtonsHeight);
-		registersButton.addActionListener((ActionEvent e) -> registersPage());
-
-		staffButton.setPreferredSize(new Dimension(mButtonsWidth, mButtonsHeight));
-		staffButton.setFont(_defaultFont);
-		staffButton.setFocusPainted(false);
-		staffButton.setForeground(Color.white);
-		staffButton.setColor(new Color(237, 237, 237, 150));
-		staffButton.setArmedColor(new Color(237, 237, 237, 200));
-		staffButton.setBounds(width - mButtonsWidth - mButtonsWidth - 20, 20 + mButtonsHeight, mButtonsWidth, mButtonsHeight);
-
-		scheduleButton.setPreferredSize(new Dimension(mButtonsWidth, mButtonsHeight));
-		scheduleButton.setFont(_defaultFont);
-		scheduleButton.setFocusPainted(false);
-		scheduleButton.setForeground(Color.white);
-		scheduleButton.setColor(new Color(237, 237, 237, 150));
-		scheduleButton.setArmedColor(new Color(237, 237, 237, 200));
-		scheduleButton.setBounds(width - mButtonsWidth - 10, 20 + mButtonsHeight, mButtonsWidth, mButtonsHeight);
+		productPanel.add(statusButton);
+		productPanel.add(productId);
 
 		int codeWidth = numpad.getWidth() - 20, codeHeight = 50;
 		productCodeField = new JTextField("Product code:");
@@ -148,15 +118,11 @@ public class StoreManagementPage implements Page {
 		_jPanel.add(keyboardPanel);
 		_jPanel.add(productPanel);
 		_jPanel.add(productCodeField);
-		_jPanel.add(deliveriesButton);
-		_jPanel.add(registersButton);
-		_jPanel.add(staffButton);
-		_jPanel.add(scheduleButton);
 	}
 
 	private void searchProduct() {
-		ProductController productController = new ProductController();
-		ProductInfo       productInfo       = productController.getProductInfo(productCodeField.getText(), currentUser.getToken());
+		ProductController   productController = new ProductController();
+		AdvancedProductInfo productInfo       = productController.getAdvancedProductInfo(productCodeField.getText(), currentUser.getToken());
 
 		productCodeField.requestFocus();
 		productCodeField.selectAll();
@@ -190,15 +156,14 @@ public class StoreManagementPage implements Page {
 			productDeposit.setText(productDeposit.getText() + " - ");
 
 		productDeposit.setText(productDeposit.getText() + "Tax: " + (int) (100 * productInfo.getPriceInfo().getTaxPercentage()) + "% ($" + df.format((productInfo.getPriceInfo().getPrice() * productInfo.getPriceInfo().getTaxPercentage())) + ")");
-		
-		if(!productInfo.getStatus().equals(ProductStatus.Active)) {
-			productStatus.setText("Status: " + productInfo.getStatus().toString());
-			productStatus.setVisible(true);
-		} else {
-			productStatus.setVisible(false);
-		}
+
+		productId.setText("ID: " + productInfo.getId().toString());
 		
 		productPanel.setVisible(true);
+	}
+
+	private void changeProductStatus() {
+		//PageHandler.switchPage("key");
 	}
 
 	private void signOut() {
@@ -206,12 +171,6 @@ public class StoreManagementPage implements Page {
 		productCodeField.setText("");
 		productPanel.setVisible(false);
 		PageHandler.switchPage("loginPage");
-	}
-
-	private void registersPage() {
-		productCodeField.setText("");
-		productPanel.setVisible(false);
-		PageHandler.switchPage("manageRegistersPage");
 	}
 
 	@Override

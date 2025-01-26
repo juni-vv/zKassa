@@ -1,4 +1,4 @@
-package com.juniper.kassa.network.controller.product;
+package com.juniper.kassa.model.product;
 
 import java.util.UUID;
 

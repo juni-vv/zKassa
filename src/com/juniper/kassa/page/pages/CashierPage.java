@@ -17,7 +17,7 @@ import com.juniper.kassa.swing.JTextField;
 import com.juniper.kassa.swing.custom.Gradient;
 import com.juniper.kassa.swing.custom.numpad.Numpad;
 
-public class CashierPage implements Page {
+public class CashierPage extends Page {
 
 	private JPanel _jPanel;
 
@@ -28,18 +28,22 @@ public class CashierPage implements Page {
 	private JButton    signoutButton    = new JButton("Sign out", 40);
 
 	private JLabel timeLabel = new JLabel("01-01-2000 00:00:00");
-
-	private User currentUser;
+	
+	public CashierPage(User user) {
+		super(user);
+		
+		this._jPanel = new JPanel();
+	}
 
 	@Override
-	public void populate() {
+	public void open() {
 		int width  = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		int height = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 
 		_jPanel.setGradient(new Gradient(0, 0, width, height, Color.decode("#0860C4"), Color.decode("#d5418f")));
 		_jPanel.setLayout(null);
 
-		keyboardPanel.add(numpad.getJPanel());
+		keyboardPanel.add(numpad.getPanel());
 
 		timeLabel.setFont(_footerFont);
 		timeLabel.setForeground(Color.white);
@@ -88,27 +92,22 @@ public class CashierPage implements Page {
 
 	private void signOut() {
 		currentUser = null;
-		PageHandler.switchPage("loginPage");
+		PageHandler.openPage(new LoginPage(null));
 	}
 
 	@Override
-	public void resume() {
+	public void start() {
 		productCodeField.requestFocus();
 	}
 
 	@Override
-	public void init() {
-		_jPanel = new JPanel();
+	public void close() {
+		
 	}
 
 	@Override
 	public JPanel getPanel() {
 		return _jPanel;
-	}
-
-	@Override
-	public void setUser(User user) {
-		currentUser = user;
 	}
 
 }

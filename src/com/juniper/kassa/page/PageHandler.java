@@ -15,12 +15,6 @@ import com.juniper.kassa.model.User;
 public class PageHandler {
 
 	private static JFrame _jFrame;
-	private static JPanel _jPagesPanel;
-
-	private static CardLayout        _cardLayout;
-	private static Map<String, Page> _pages;
-	
-	private static List<NewPage> _newPages;
 
 	public static void init() {
 		if(_jFrame == null) {
@@ -31,56 +25,22 @@ public class PageHandler {
 			_jFrame.setSize(Toolkit.getDefaultToolkit().getScreenSize());
 			_jFrame.setUndecorated(true);
 			_jFrame.setLocationRelativeTo(null);
-
-			_jPagesPanel = new JPanel();
-			_cardLayout = new CardLayout();
-			
-			_jPagesPanel.setLayout(_cardLayout);
-			_pages = new HashMap<String, Page>();
-			_newPages = new ArrayList<NewPage>();
-			_jFrame.add(_jPagesPanel);
 		}
 	}
-
-	public static void addPage(String name, Page page) {
-		_pages.put(name, page);
-		page.init();
-		page.populate();
-		_jPagesPanel.add(page.getPanel(), name);
-	}
 	
-	public static void openPage(NewPage page) {
-		_jPagesPanel.add(page.getPanel(), "page");
+	public static void openPage(Page page) {
+		_jFrame.setContentPane(page.getPanel());
 		_jFrame.setVisible(true);
+		
 		page.open();
-		
-		_cardLayout.show(_jPagesPanel, "page");
 		page.start();
+		
+		_jFrame.revalidate();
+		_jFrame.repaint();
 	}
 	
-	public static void closePage(NewPage page) {
-		_jPagesPanel.remove(page.getPanel());
+	public static void closePage(Page page) {
 		page.close();
-	}
-
-	public static void switchPage(String name) {
-		_cardLayout.show(_jPagesPanel, name);
-		_jFrame.setVisible(true);
-		
-		Page page = _pages.get(name);
-		if(page != null) {
-			page.resume();
-			return;
-		}
-		
-		System.out.println("Page \"" + name + "\" was not found.");
-	}
-	
-	public static void sendUser(String pageName, User user) {
-		Page page = _pages.get(pageName);
-		if(page != null) {
-			page.setUser(user);
-		}
 	}
 
 }

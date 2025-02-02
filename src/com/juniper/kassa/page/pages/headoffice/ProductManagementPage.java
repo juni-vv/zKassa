@@ -12,7 +12,7 @@ import javax.swing.JLabel;
 import com.juniper.kassa.model.User;
 import com.juniper.kassa.model.product.AdvancedProductInfo;
 import com.juniper.kassa.network.controller.product.ProductController;
-import com.juniper.kassa.page.NewPage;
+import com.juniper.kassa.page.Page;
 import com.juniper.kassa.page.PageHandler;
 import com.juniper.kassa.page.pages.LoginPage;
 import com.juniper.kassa.swing.JButton;
@@ -22,7 +22,7 @@ import com.juniper.kassa.swing.custom.Gradient;
 import com.juniper.kassa.swing.custom.Popup;
 import com.juniper.kassa.swing.custom.numpad.Numpad;
 
-public class ProductManagementPage extends NewPage {
+public class ProductManagementPage extends Page {
 
 	public ProductManagementPage(User user) {
 		super(user);
@@ -37,9 +37,9 @@ public class ProductManagementPage extends NewPage {
 	private JPanel keyboardPanel = new JPanel();
 	private JPanel productPanel  = new JPanel();
 
-	private Numpad     numpad           = new Numpad(15);
 	private JTextField productCodeField = new JTextField("Product code");
-
+	private Numpad     numpad           = new Numpad(15);
+	
 	private JButton signoutButton = new JButton("Sign out", 40);
 	private JButton statusButton  = new JButton("Modify activity status", 15);
 
@@ -58,8 +58,6 @@ public class ProductManagementPage extends NewPage {
 		_jPanel.setGradient(new Gradient(0, 0, width, height, Color.decode("#0860C4"), Color.decode("#d5418f")));
 		_jPanel.setLayout(null);
 
-		keyboardPanel.add(numpad.getJPanel());
-
 		timeLabel.setFont(_footerFont);
 		timeLabel.setForeground(Color.white);
 		timeLabel.setBounds(width - timeLabel.getPreferredSize().width - 10, height - timeLabel.getPreferredSize().height - 10, timeLabel.getPreferredSize().width, timeLabel.getPreferredSize().height);
@@ -76,8 +74,9 @@ public class ProductManagementPage extends NewPage {
 		signoutButton.setBounds(width - signoutWidth - 10, height - signoutHeight - 10 - timeLabel.getPreferredSize().height, signoutWidth, signoutHeight);
 		signoutButton.addActionListener((ActionEvent e) -> signOut());
 
+		keyboardPanel.add(numpad.getPanel());
 		keyboardPanel.setBounds(width - numpad.getWidth(), signoutButton.getBounds().y - keyboardPanel.getPreferredSize().height, numpad.getWidth(), numpad.getHeight());
-
+		
 		productPanel.setBounds(10, 10, width - signoutWidth - 30, height - 20);
 		productPanel.setBackground(Color.black);
 		productPanel.setLayout(null);
@@ -180,6 +179,8 @@ public class ProductManagementPage extends NewPage {
 		currentUser = null;
 		productCodeField.setText("");
 		productPanel.setVisible(false);
+		
+		PageHandler.closePage(this);
 		PageHandler.openPage(new LoginPage(null));
 	}
 
@@ -190,7 +191,6 @@ public class ProductManagementPage extends NewPage {
 
 	@Override
 	public void close() {
-		// TODO Auto-generated method stub
 		
 	}
 	

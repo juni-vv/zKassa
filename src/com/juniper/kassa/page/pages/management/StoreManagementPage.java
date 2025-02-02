@@ -15,6 +15,7 @@ import com.juniper.kassa.model.product.ProductStatus;
 import com.juniper.kassa.network.controller.product.ProductController;
 import com.juniper.kassa.page.Page;
 import com.juniper.kassa.page.PageHandler;
+import com.juniper.kassa.page.pages.LoginPage;
 import com.juniper.kassa.swing.JButton;
 import com.juniper.kassa.swing.JPanel;
 import com.juniper.kassa.swing.JTextField;
@@ -22,7 +23,7 @@ import com.juniper.kassa.swing.custom.Gradient;
 import com.juniper.kassa.swing.custom.Popup;
 import com.juniper.kassa.swing.custom.numpad.Numpad;
 
-public class StoreManagementPage implements Page {
+public class StoreManagementPage extends Page {
 
 	private JPanel _jPanel;
 
@@ -42,18 +43,22 @@ public class StoreManagementPage implements Page {
 	private JLabel productTitle   = new JLabel("{productTitle}");
 	private JLabel productDeposit = new JLabel("{productDeposit}");
 	private JLabel productStatus  = new JLabel("{productStatus}");
-
-	private User currentUser;
+	
+	public StoreManagementPage(User user) {
+		super(user);
+		
+		this._jPanel = new JPanel();
+	}
 
 	@Override
-	public void populate() {
+	public void open() {
 		int width  = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
 		int height = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 
 		_jPanel.setGradient(new Gradient(0, 0, width, height, Color.decode("#0860C4"), Color.decode("#d5418f")));
 		_jPanel.setLayout(null);
 
-		keyboardPanel.add(numpad.getJPanel());
+		keyboardPanel.add(numpad.getPanel());
 
 		timeLabel.setFont(_footerFont);
 		timeLabel.setForeground(Color.white);
@@ -205,28 +210,27 @@ public class StoreManagementPage implements Page {
 		currentUser = null;
 		productCodeField.setText("");
 		productPanel.setVisible(false);
-		PageHandler.switchPage("loginPage");
+
+		PageHandler.closePage(this);
+		PageHandler.openPage(new LoginPage(null));
 	}
 
 	private void registersPage() {
 		productCodeField.setText("");
 		productPanel.setVisible(false);
-		PageHandler.switchPage("manageRegistersPage");
+		
+		PageHandler.closePage(this);
+		PageHandler.openPage(new ManageRegistersPage(currentUser));
 	}
 
 	@Override
-	public void setUser(User user) {
-		currentUser = user;
-	}
-
-	@Override
-	public void resume() {
+	public void start() {
 		productCodeField.requestFocus();
 	}
 
 	@Override
-	public void init() {
-		_jPanel = new JPanel();
+	public void close() {
+		
 	}
 
 	@Override

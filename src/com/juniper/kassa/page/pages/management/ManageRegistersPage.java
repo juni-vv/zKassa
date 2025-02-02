@@ -1,27 +1,16 @@
 package com.juniper.kassa.page.pages.management;
 
-import javax.swing.JPanel;
-
 import com.juniper.kassa.model.User;
 import com.juniper.kassa.page.Page;
+import com.juniper.kassa.swing.JPanel;
 
-public class ManageRegistersPage implements Page {
+public class ManageRegistersPage extends Page {
 	
 	private JPanel _jPanel;
-	private String jwt;
+	
+	public ManageRegistersPage(User user) {
+		super(user);
 
-	@Override
-	public void populate() {
-		
-	}
-
-	@Override
-	public void resume() {
-		
-	}
-
-	@Override
-	public void init() {
 		_jPanel = new JPanel();
 	}
 
@@ -31,7 +20,17 @@ public class ManageRegistersPage implements Page {
 	}
 
 	@Override
-	public void setUser(User user) {
+	public void open() {
+		
+	}
+
+	@Override
+	public void close() {
+		
+	}
+
+	@Override
+	public void start() {
 		
 	}
 

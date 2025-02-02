@@ -15,9 +15,10 @@ import com.juniper.kassa.model.UserRole;
 import com.juniper.kassa.network.controller.authentication.AuthenticationController;
 import com.juniper.kassa.network.controller.authentication.LoginResult;
 import com.juniper.kassa.network.controller.authentication.LoginResult.Type;
-import com.juniper.kassa.page.NewPage;
+import com.juniper.kassa.page.Page;
 import com.juniper.kassa.page.PageHandler;
 import com.juniper.kassa.page.pages.headoffice.ProductManagementPage;
+import com.juniper.kassa.page.pages.management.StoreManagementPage;
 import com.juniper.kassa.swing.JButton;
 import com.juniper.kassa.swing.JPanel;
 import com.juniper.kassa.swing.JPasswordField;
@@ -26,7 +27,7 @@ import com.juniper.kassa.swing.custom.Gradient;
 import com.juniper.kassa.swing.custom.Popup;
 import com.juniper.kassa.swing.custom.numpad.Numpad;
 
-public class LoginPage extends NewPage {
+public class LoginPage extends Page {
 
 	private JPanel _jPanel;
 
@@ -55,7 +56,6 @@ public class LoginPage extends NewPage {
 		int height = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
 
 		_jPanel.setLayout(null);
-
 		_jPanel.setGradient(new Gradient(0, 0, width, height, Color.decode("#0860C4"), Color.decode("#d5418f")));
 
 		/* Login title */
@@ -116,7 +116,7 @@ public class LoginPage extends NewPage {
 		loginButton.addActionListener((ActionEvent e) -> attemptLogin());
 
 		/* Keyboard */
-		keyboardPanel.add(numpad.getJPanel());
+		keyboardPanel.add(numpad.getPanel());
 		keyboardPanel.setBounds(width / 2 - numpad.getWidth() / 2, height - 50 - numpad.getHeight(), numpad.getWidth(), numpad.getHeight());
 
 		numpad.setTargetField(passwordField);
@@ -168,6 +168,8 @@ public class LoginPage extends NewPage {
 
 		passwordField.setText("");
 		usernameField.setText("");
+		
+		System.out.println("User role: " + result.getUserRole().toString());
 
 		if(result.getType() == Type.Success) {
 			String jwt = result.getToken();
@@ -175,17 +177,13 @@ public class LoginPage extends NewPage {
 				User user = new User(result.getUserRole(), result.getToken());
 
 				if(result.getUserRole() == UserRole.Manager) {
-					String page = "storeManagementPage";
-					PageHandler.sendUser(page, user);
-					PageHandler.switchPage(page);
 					PageHandler.closePage(this);
+					PageHandler.openPage(new StoreManagementPage(user));
 				}
 
 				if(result.getUserRole() == UserRole.Cashier || result.getUserRole() == UserRole.SCO || result.getUserRole() == UserRole.Service || result.getUserRole() == UserRole.TeamLead) {
-					String page = "cashierPage";
 					PageHandler.closePage(this);
-					PageHandler.sendUser(page, user);
-					PageHandler.switchPage(page);
+					PageHandler.openPage(new CashierPage(user));
 				}
 
 				if(result.getUserRole() == UserRole.Store) {

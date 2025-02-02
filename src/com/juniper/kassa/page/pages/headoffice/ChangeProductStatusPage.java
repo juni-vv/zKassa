@@ -10,18 +10,18 @@ import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JScrollPane;
 
 import com.juniper.kassa.model.User;
 import com.juniper.kassa.model.product.AdvancedProductInfo;
 import com.juniper.kassa.network.controller.logistics.DistributionCenterController;
-import com.juniper.kassa.page.NewPage;
+import com.juniper.kassa.page.Page;
 import com.juniper.kassa.page.PageHandler;
 import com.juniper.kassa.swing.JButton;
 import com.juniper.kassa.swing.JPanel;
+import com.juniper.kassa.swing.JScrollPane;
 import com.juniper.kassa.swing.custom.Gradient;
 
-public class ChangeProductStatusPage extends NewPage {
+public class ChangeProductStatusPage extends Page {
 
 	private JPanel _jPanel;
 
@@ -73,7 +73,7 @@ public class ChangeProductStatusPage extends NewPage {
 		backButton.setColor(new Color(237, 237, 237, 150));
 		backButton.setArmedColor(new Color(237, 237, 237, 200));
 		backButton.setBounds(width - signoutWidth - 10, height - signoutHeight - 10 - timeLabel.getPreferredSize().height, signoutWidth, signoutHeight);
-		backButton.addActionListener((ActionEvent e) -> close());
+		backButton.addActionListener((ActionEvent e) -> back());
 
 		_jPanel.add(backButton);
 
@@ -91,7 +91,7 @@ public class ChangeProductStatusPage extends NewPage {
 
 		int dcScrollWidth = width / 3, dcScrollHeight = height / 3;
 		dcScrollPane.setBounds(width / 2 - dcScrollWidth / 2, 10 + subtitleLabel.getBounds().y + subtitleLabel.getBounds().height, dcScrollWidth, dcScrollHeight);
-
+		
 		_jPanel.add(dcScrollPane);
 
 	}
@@ -101,14 +101,15 @@ public class ChangeProductStatusPage extends NewPage {
 		dcController.getDistributionCenterNames(currentUser.getToken());
 		
 		List<String> dcList = new ArrayList<String>(); // TODO: Get from api
-		for(int i = 0; i < 400; i++)
+		for(int i = 0; i < 200; i++)
 			dcList.add("Item " + i);
-
-		DefaultListModel<String> dcListModel = new DefaultListModel<String>();
-		dcListModel.addAll(dcList);
-
-		JList<String> dcJList = new JList<String>(dcListModel);
-		dcScrollPane = new JScrollPane(dcJList);
+		
+		
+		dcScrollPane = new JScrollPane(dcList, 15);//new JScrollPane(dcJList, 15);
+	}
+	
+	private void back() {
+		PageHandler.closePage(this);
 	}
 
 	@Override

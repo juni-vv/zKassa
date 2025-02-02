@@ -28,8 +28,6 @@ public class Numpad {
 	private JTextField targetField;
 
 	public Numpad(int cornerRadius) {
-		keyboardPanel.setOpaque(false);
-		
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.insets = new Insets(5, 5, 5, 5);
 
@@ -102,7 +100,7 @@ public class Numpad {
 		this.enterKeyListener = enterKeyListener;
 	}
 	
-	public JPanel getJPanel() {
+	public JPanel getPanel() {
 		return keyboardPanel;
 	}
 	

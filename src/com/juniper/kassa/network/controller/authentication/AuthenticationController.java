@@ -12,7 +12,6 @@ import java.net.http.HttpResponse.BodyHandlers;
 import org.json.JSONObject;
 
 import com.juniper.kassa.network.PostRequest;
-import com.juniper.kassa.network.controller.Controller;
 import com.juniper.kassa.network.controller.authentication.LoginResult.Type;
 
 public class AuthenticationController {

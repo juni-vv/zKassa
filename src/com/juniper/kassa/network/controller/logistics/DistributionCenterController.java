@@ -12,33 +12,30 @@ import org.json.JSONObject;
 import com.juniper.kassa.model.product.ProductInfo;
 import com.juniper.kassa.model.product.ProductPriceInfo;
 import com.juniper.kassa.model.product.ProductStatus;
+import com.juniper.kassa.network.GetRequest;
 import com.juniper.kassa.network.controller.Controller;
 
-public class DistributionCenterController extends Controller {
+public class DistributionCenterController {
 
 	public List<String> getDistributionCenterNames(String jwt) {
 		String route = "/DistributionCenter/GetAllNames";
 
 		try {
-			HttpRequest request = getRequest(route, jwt);
+			GetRequest request = new GetRequest(route);
+			request.useToken(jwt);
+			
+			HttpResponse<String> response = (HttpResponse<String>) request.send();
 
-			try {
-				HttpResponse<String> response = HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
-
-				if(response.statusCode() != 200) {
-					return null;
-				}
-
-				JSONObject responseObject = new JSONObject(response.body());
-				
-
-				System.out.println(responseObject.toString());
-				
-			} catch(Exception e) {
-				e.printStackTrace();
+			if(response.statusCode() != 200) {
+				return null;
 			}
-		} catch(IllegalArgumentException e) {
-			return null;
+
+			JSONObject responseObject = new JSONObject(response.body());
+
+			System.out.println(responseObject.toString());
+
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 
 		return null;

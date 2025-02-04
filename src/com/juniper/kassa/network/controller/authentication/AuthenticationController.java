@@ -11,10 +11,11 @@ import java.net.http.HttpResponse.BodyHandlers;
 
 import org.json.JSONObject;
 
+import com.juniper.kassa.network.PostRequest;
 import com.juniper.kassa.network.controller.Controller;
 import com.juniper.kassa.network.controller.authentication.LoginResult.Type;
 
-public class AuthenticationController extends Controller {
+public class AuthenticationController {
 
 	public LoginResult attemptLogin(String username, String password) {
 		String route = "/Authentication/Login";
@@ -22,15 +23,15 @@ public class AuthenticationController extends Controller {
 		JSONObject json = new JSONObject();
 		json.put("userName", username);
 		json.put("password", password);
-
-		HttpRequest request = postRequest(route, json);
 		
 		try {
-			HttpResponse<String> response = HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
+			PostRequest request = new PostRequest(route);
+			request.sendJSON(json);
+			
+			HttpResponse<String> response = (HttpResponse<String>) request.send();
 			
 			if(response.statusCode() == 200)
 				return new LoginResult(Type.Success, response);		
-			
 		} catch(ConnectException ce) {
 			return new LoginResult(Type.NoConnection, null, ce);
 		} catch(IOException | InterruptedException e) {

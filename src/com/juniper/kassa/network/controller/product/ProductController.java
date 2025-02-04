@@ -12,61 +12,54 @@ import com.juniper.kassa.model.product.AdvancedProductInfo;
 import com.juniper.kassa.model.product.ProductInfo;
 import com.juniper.kassa.model.product.ProductPriceInfo;
 import com.juniper.kassa.model.product.ProductStatus;
+import com.juniper.kassa.network.GetRequest;
 import com.juniper.kassa.network.controller.Controller;
 
-public class ProductController extends Controller {
+public class ProductController {
 
 	public ProductInfo getProductInfo(String code, String jwt) {
 		String route = "/Product/" + code;
 
 		try {
-			HttpRequest request = getRequest(route, jwt);
+			GetRequest request = new GetRequest(route);
+			request.useToken(jwt);
 
-			try {
-				HttpResponse<String> response = HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
-				
-				if(response.statusCode() != 200) {
-					return null;
-				}
+			HttpResponse<String> response = (HttpResponse<String>) request.send();
 
-				JSONObject responseObject = new JSONObject(response.body());
-				
-				ProductPriceInfo priceInfo = new ProductPriceInfo(responseObject.getDouble("price"), responseObject.getDouble("deposit"), responseObject.getDouble("plasticTax"), responseObject.getDouble("salesTax"));
-				return new ProductInfo(UUID.fromString(responseObject.getString("id")), responseObject.getString("name"), priceInfo, ProductStatus.fromInt(responseObject.getInt("productStatus")));
-			} catch(Exception e) {
-				e.printStackTrace();
+			if(response.statusCode() != 200) {
+				return null;
 			}
-		} catch(IllegalArgumentException e) {
-			return null;
+
+			JSONObject responseObject = new JSONObject(response.body());
+
+			ProductPriceInfo priceInfo = new ProductPriceInfo(responseObject.getDouble("price"), responseObject.getDouble("deposit"), responseObject.getDouble("plasticTax"), responseObject.getDouble("salesTax"));
+			return new ProductInfo(UUID.fromString(responseObject.getString("id")), responseObject.getString("name"), priceInfo, ProductStatus.fromInt(responseObject.getInt("productStatus")));
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 
 		return null;
 	}
-	
+
 	public AdvancedProductInfo getAdvancedProductInfo(String code, String jwt) {
 		String route = "/Test/" + code;
 
 		try {
-			HttpRequest request = getRequest(route, jwt);
+			GetRequest request = new GetRequest(route);
+			request.useToken(jwt);
 
-			try {
-				HttpResponse<String> response = HttpClient.newHttpClient().send(request, BodyHandlers.ofString());
-				
-				if(response.statusCode() != 200) {
-					return null;
-				}
+			HttpResponse<String> response = (HttpResponse<String>) request.send();
 
-				JSONObject responseObject = new JSONObject(response.body());
-				
-				ProductPriceInfo priceInfo = new ProductPriceInfo(responseObject.getDouble("price"), responseObject.getDouble("deposit"), responseObject.getDouble("plasticTax"), responseObject.getDouble("salesTax"));
-				return new AdvancedProductInfo(UUID.fromString(responseObject.getString("id")), 
-						responseObject.getString("name"), 
-						priceInfo);
-			} catch(Exception e) {
-				e.printStackTrace();
+			if(response.statusCode() != 200) {
+				return null;
 			}
-		} catch(IllegalArgumentException e) {
-			return null;
+
+			JSONObject responseObject = new JSONObject(response.body());
+
+			ProductPriceInfo priceInfo = new ProductPriceInfo(responseObject.getDouble("price"), responseObject.getDouble("deposit"), responseObject.getDouble("plasticTax"), responseObject.getDouble("salesTax"));
+			return new AdvancedProductInfo(UUID.fromString(responseObject.getString("id")), responseObject.getString("name"), priceInfo);
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
 
 		return null;

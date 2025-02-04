@@ -168,8 +168,6 @@ public class LoginPage extends Page {
 
 		passwordField.setText("");
 		usernameField.setText("");
-		
-		System.out.println("User role: " + result.getUserRole().toString());
 
 		if(result.getType() == Type.Success) {
 			String jwt = result.getToken();

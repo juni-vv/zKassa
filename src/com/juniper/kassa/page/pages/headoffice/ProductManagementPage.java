@@ -15,11 +15,12 @@ import com.juniper.kassa.network.controller.product.ProductController;
 import com.juniper.kassa.page.Page;
 import com.juniper.kassa.page.PageHandler;
 import com.juniper.kassa.page.pages.LoginPage;
+import com.juniper.kassa.page.pages.headoffice.categories.ManageCategoriesPage;
 import com.juniper.kassa.swing.JButton;
 import com.juniper.kassa.swing.JPanel;
 import com.juniper.kassa.swing.JTextField;
 import com.juniper.kassa.swing.custom.Gradient;
-import com.juniper.kassa.swing.custom.Popup;
+import com.juniper.kassa.swing.custom.OkPopup;
 import com.juniper.kassa.swing.custom.numpad.Numpad;
 
 public class ProductManagementPage extends Page {
@@ -28,7 +29,7 @@ public class ProductManagementPage extends Page {
 		super(user);
 
 		this._jPanel = new JPanel();
-		
+
 		productCodeField.requestFocus();
 	}
 
@@ -39,9 +40,11 @@ public class ProductManagementPage extends Page {
 
 	private JTextField productCodeField = new JTextField("Product code");
 	private Numpad     numpad           = new Numpad(15);
-	
-	private JButton signoutButton = new JButton("Sign out", 40);
-	private JButton statusButton  = new JButton("Modify activity status", 15);
+
+	private JButton signoutButton    = new JButton("Sign out", 40);
+	private JButton statusButton     = new JButton("Modify activity status", 15);
+	private JButton categoriesButton = new JButton("Manage categories", 15);
+	private JButton addProductButton = new JButton("Add a product", 15);
 
 	private JLabel timeLabel      = new JLabel("01-01-2000 00:00:00");
 	private JLabel productTitle   = new JLabel("{productTitle}");
@@ -74,9 +77,28 @@ public class ProductManagementPage extends Page {
 		signoutButton.setBounds(width - signoutWidth - 10, height - signoutHeight - 10 - timeLabel.getPreferredSize().height, signoutWidth, signoutHeight);
 		signoutButton.addActionListener((ActionEvent e) -> signOut());
 
+		int mButtonsWidth = numpad.getWidth() / 2 - 15, mButtonsHeight = 50;
+
+		categoriesButton.setPreferredSize(new Dimension(mButtonsWidth, mButtonsHeight));
+		categoriesButton.setFont(_defaultFont);
+		categoriesButton.setFocusPainted(false);
+		categoriesButton.setForeground(Color.white);
+		categoriesButton.setColor(new Color(237, 237, 237, 150));
+		categoriesButton.setArmedColor(new Color(237, 237, 237, 200));
+		categoriesButton.setBounds(width - mButtonsWidth - 10, 10, mButtonsWidth, mButtonsHeight);
+		categoriesButton.addActionListener((ActionEvent e) -> manageCategoriesPage());
+
+		addProductButton.setPreferredSize(new Dimension(mButtonsWidth, mButtonsHeight));
+		addProductButton.setFont(_defaultFont);
+		addProductButton.setFocusPainted(false);
+		addProductButton.setForeground(Color.white);
+		addProductButton.setColor(new Color(237, 237, 237, 150));
+		addProductButton.setArmedColor(new Color(237, 237, 237, 200));
+		addProductButton.setBounds(width - mButtonsWidth - mButtonsWidth - 20, 10, mButtonsWidth, mButtonsHeight);
+
 		keyboardPanel.add(numpad.getPanel());
 		keyboardPanel.setBounds(width - numpad.getWidth(), signoutButton.getBounds().y - keyboardPanel.getPreferredSize().height, numpad.getWidth(), numpad.getHeight());
-		
+
 		productPanel.setBounds(10, 10, width - signoutWidth - 30, height - 20);
 		productPanel.setBackground(Color.black);
 		productPanel.setLayout(null);
@@ -126,6 +148,8 @@ public class ProductManagementPage extends Page {
 		_jPanel.add(keyboardPanel);
 		_jPanel.add(productPanel);
 		_jPanel.add(productCodeField);
+		_jPanel.add(categoriesButton);
+		_jPanel.add(addProductButton);
 	}
 
 	private void searchProduct() {
@@ -136,7 +160,7 @@ public class ProductManagementPage extends Page {
 		productCodeField.selectAll();
 
 		if(productInfo == null) {
-			Popup popup = new Popup(this, "Error", "This product could not be found!");
+			OkPopup popup = new OkPopup(this, "Error", "This product could not be found!");
 			popup.setNextFocus(productCodeField);
 			popup.show();
 
@@ -170,16 +194,23 @@ public class ProductManagementPage extends Page {
 		productPanel.setVisible(true);
 	}
 
+	private void manageCategoriesPage() {
+		PageHandler.closePage(this);
+		PageHandler.openPage(new ManageCategoriesPage(currentUser));
+	}
+
 	private void changeProductStatus() {
-		if(productInfo != null)
+		if(productInfo != null) {
+			PageHandler.closePage(this);
 			PageHandler.openPage(new ChangeProductStatusPage(currentUser, productInfo));
+		}
 	}
 
 	private void signOut() {
 		currentUser = null;
 		productCodeField.setText("");
 		productPanel.setVisible(false);
-		
+
 		PageHandler.closePage(this);
 		PageHandler.openPage(new LoginPage(null));
 	}
@@ -191,9 +222,9 @@ public class ProductManagementPage extends Page {
 
 	@Override
 	public void close() {
-		
+
 	}
-	
+
 	@Override
 	public void start() {
 		productCodeField.requestFocus();

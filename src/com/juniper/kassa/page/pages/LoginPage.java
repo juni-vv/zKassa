@@ -24,7 +24,7 @@ import com.juniper.kassa.swing.JPanel;
 import com.juniper.kassa.swing.JPasswordField;
 import com.juniper.kassa.swing.JTextField;
 import com.juniper.kassa.swing.custom.Gradient;
-import com.juniper.kassa.swing.custom.Popup;
+import com.juniper.kassa.swing.custom.OkPopup;
 import com.juniper.kassa.swing.custom.numpad.Numpad;
 
 public class LoginPage extends Page {
@@ -233,7 +233,7 @@ public class LoginPage extends Page {
 			return;
 		}
 
-		Popup popup = new Popup(this, "Unknown error", "An unknown error occurred, please contact your system administrator.");
+		OkPopup popup = new OkPopup(this, "Unknown error", "An unknown error occurred, please contact your system administrator.");
 		popup.setNextFocus(usernameField);
 		popup.show();
 	}

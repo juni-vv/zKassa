@@ -7,9 +7,9 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
 
 import com.juniper.kassa.model.User;
 import com.juniper.kassa.model.product.AdvancedProductInfo;
@@ -18,14 +18,15 @@ import com.juniper.kassa.page.Page;
 import com.juniper.kassa.page.PageHandler;
 import com.juniper.kassa.swing.JButton;
 import com.juniper.kassa.swing.JPanel;
-import com.juniper.kassa.swing.JScrollPane;
+import com.juniper.kassa.swing.ModernScrollBarUI;
 import com.juniper.kassa.swing.custom.Gradient;
 
 public class ChangeProductStatusPage extends Page {
 
 	private JPanel _jPanel;
 
-	private JScrollPane dcScrollPane;
+	private JPanel distributionCentersPanel = new JPanel(15);
+	private JScrollPane dcScrollPane = new JScrollPane();
 
 	private JButton backButton = new JButton("Back", 40);
 
@@ -42,8 +43,6 @@ public class ChangeProductStatusPage extends Page {
 		this._jPanel = new JPanel();
 
 		subtitleLabel.setText(productInfo.getName() + " - " + productInfo.getId().toString());
-
-		fillDistributionCenters();
 	}
 
 	@Override
@@ -90,9 +89,16 @@ public class ChangeProductStatusPage extends Page {
 		_jPanel.add(subtitleLabel);
 
 		int dcScrollWidth = width / 3, dcScrollHeight = height / 3;
-		dcScrollPane.setBounds(width / 2 - dcScrollWidth / 2, 10 + subtitleLabel.getBounds().y + subtitleLabel.getBounds().height, dcScrollWidth, dcScrollHeight);
+		distributionCentersPanel.setBounds(width / 2 - dcScrollWidth / 2, 10 + subtitleLabel.getBounds().y + subtitleLabel.getBounds().height, dcScrollWidth, dcScrollHeight);
+		dcScrollPane.setBounds(width / 2 - dcScrollWidth / 2 + 5, 15 + subtitleLabel.getBounds().y + subtitleLabel.getBounds().height, dcScrollWidth - 10, dcScrollHeight - 10);
+		
+		distributionCentersPanel.setBackground(Color.white);
+		dcScrollPane.setOpaque(false);
+		dcScrollPane.setBorder(null);
+		dcScrollPane.getVerticalScrollBar().setUI(new ModernScrollBarUI());
 		
 		_jPanel.add(dcScrollPane);
+		_jPanel.add(distributionCentersPanel);
 
 	}
 
@@ -104,8 +110,9 @@ public class ChangeProductStatusPage extends Page {
 		for(int i = 0; i < 200; i++)
 			dcList.add("Item " + i);
 		
+		JList<String> dcJList = new JList<String>((String[]) dcList.toArray(new String[0]));
 		
-		dcScrollPane = new JScrollPane(dcList, 15);//new JScrollPane(dcJList, 15);
+		dcScrollPane.setViewportView(dcJList);
 	}
 	
 	private void back() {
@@ -119,7 +126,7 @@ public class ChangeProductStatusPage extends Page {
 
 	@Override
 	public void start() {
-
+		fillDistributionCenters();
 	}
 
 }

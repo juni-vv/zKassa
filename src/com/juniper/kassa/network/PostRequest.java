@@ -24,6 +24,10 @@ public class PostRequest extends ApiRequest {
 	public void sendJSON(JSONObject object) {
 		requestBuilder.POST(BodyPublishers.ofString(object.toString()));
 	}
+	
+	public void useToken(String token) {
+		requestBuilder.header("Authorization", "Bearer " + token);
+	}
 
 	@Override
 	public HttpResponse<?> send() throws IOException, InterruptedException, ConnectException {

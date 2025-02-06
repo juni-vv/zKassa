@@ -20,7 +20,7 @@ import com.juniper.kassa.swing.JButton;
 import com.juniper.kassa.swing.JPanel;
 import com.juniper.kassa.swing.JTextField;
 import com.juniper.kassa.swing.custom.Gradient;
-import com.juniper.kassa.swing.custom.Popup;
+import com.juniper.kassa.swing.custom.OkPopup;
 import com.juniper.kassa.swing.custom.numpad.Numpad;
 
 public class StoreManagementPage extends Page {
@@ -167,7 +167,7 @@ public class StoreManagementPage extends Page {
 		productCodeField.selectAll();
 
 		if(productInfo == null) {
-			Popup popup = new Popup(this, "Error", "This product could not be found!");
+			OkPopup popup = new OkPopup(this, "Error", "This product could not be found!");
 			popup.setNextFocus(productCodeField);
 			popup.show();
 

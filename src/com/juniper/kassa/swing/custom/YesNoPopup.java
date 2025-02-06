@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
+import java.util.concurrent.CompletableFuture;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -20,7 +21,7 @@ import com.juniper.kassa.page.Page;
 import com.juniper.kassa.swing.JButton;
 import com.juniper.kassa.swing.JPanel;
 
-public class Popup {
+public class YesNoPopup {
 
 	private JFrame frame = new JFrame("Message");
 
@@ -29,9 +30,11 @@ public class Popup {
 	
 	private JComponent nextFocus = null;
 	
+	private CompletableFuture<Boolean> result = new CompletableFuture<>();
+	
 	private boolean open = false;
 
-	public Popup(Page parent, String title, String message) {
+	public YesNoPopup(Page parent, String title, String message) {
 		this.title = title;
 		this.message = message;
 
@@ -76,19 +79,30 @@ public class Popup {
 		StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
 		document.setParagraphAttributes(0, document.getLength(), center, false);
 
-		JButton button = new JButton("Okay", 15);
-		button.setPreferredSize(new Dimension(200, 100));
-		button.setFont(parent._defaultFont);
-		button.setFocusPainted(false);
-		button.setForeground(Color.WHITE);
-		button.setColor(new Color(237, 237, 237, 150));
-		button.setArmedColor(new Color(237, 237, 237, 200));
-		button.setBounds(new Rectangle(10, height - 60, width - 20, 50));
-		button.addActionListener(closeButton());
+		JButton yesButton = new JButton("Yes", 15);
+		yesButton.setPreferredSize(new Dimension(200, 100));
+		yesButton.setFont(parent._defaultFont);
+		yesButton.setFocusPainted(false);
+		yesButton.setForeground(Color.WHITE);
+		yesButton.setColor(new Color(237, 237, 237, 150));
+		yesButton.setArmedColor(new Color(237, 237, 237, 200));
+		yesButton.setBounds(new Rectangle(10, height - 60, width / 2 - 15, 50));
+		yesButton.addActionListener(yesButton());
+		
+		JButton noButton = new JButton("No", 15);
+		noButton.setPreferredSize(new Dimension(200, 100));
+		noButton.setFont(parent._defaultFont);
+		noButton.setFocusPainted(false);
+		noButton.setForeground(Color.WHITE);
+		noButton.setColor(new Color(237, 237, 237, 150));
+		noButton.setArmedColor(new Color(237, 237, 237, 200));
+		noButton.setBounds(new Rectangle(yesButton.getBounds().width + 20, height - 60, width / 2 - 15, 50));
+		noButton.addActionListener(noButton());
 
 		panel.add(title);
 		panel.add(message);
-		panel.add(button);
+		panel.add(yesButton);
+		panel.add(noButton);
 
 		frame.add(panel);
 		
@@ -110,11 +124,29 @@ public class Popup {
 		
 		open = true;
 	}
-
-	private ActionListener closeButton() {
+	
+	private ActionListener yesButton() {
 		return (ActionEvent e) -> {
 			frame.dispose();
 			frame.setVisible(false);
+			
+			result.complete(true);
+			
+			open = false;
+			
+			if(nextFocus != null) {
+				nextFocus.requestFocus();
+			}
+		};
+	}
+	
+
+	private ActionListener noButton() {
+		return (ActionEvent e) -> {
+			frame.dispose();
+			frame.setVisible(false);
+			
+			result.complete(false);
 			
 			open = false;
 			
@@ -127,5 +159,9 @@ public class Popup {
 	public boolean isOpen() {
 		return open;
 	}
-
+	
+	public CompletableFuture<Boolean> getResult() {
+		return result;
+	}
+	
 }

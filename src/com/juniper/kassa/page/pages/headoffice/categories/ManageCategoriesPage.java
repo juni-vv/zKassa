@@ -33,7 +33,6 @@ public class ManageCategoriesPage extends Page {
 
 	private JLabel titleLabel    = new JLabel("Manage categories");
 	private JLabel subtitleLabel = new JLabel("Add or remove categories");
-	private JLabel timeLabel     = new JLabel("01-01-2000 00:00:00");
 
 	public ManageCategoriesPage(User user) {
 		super(user);

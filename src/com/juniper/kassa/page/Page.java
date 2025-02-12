@@ -1,6 +1,10 @@
 package com.juniper.kassa.page;
 
 import java.awt.Font;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import javax.swing.JLabel;
 
 import com.juniper.kassa.model.User;
 import com.juniper.kassa.swing.JPanel;
@@ -14,6 +18,8 @@ public abstract class Page {
 	public final Font _errorFont    = FontManager.createFont("/Raleway-Black.ttf", 18);
 	public final Font _footerFont   = FontManager.createFont("/Raleway-SemiBold.ttf", 20);
 	
+	protected JLabel timeLabel         = new JLabel("01-01-2000 00:00:00");
+	
 	protected User currentUser;
 	
 	public Page(User user) {
@@ -25,5 +31,10 @@ public abstract class Page {
 	public abstract void start();
 	
 	public abstract JPanel getPanel();
+	
+	public void update() {
+        String formattedDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+		timeLabel.setText(formattedDateTime);
+	}
 	
 }

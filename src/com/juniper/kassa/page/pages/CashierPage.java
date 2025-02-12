@@ -26,8 +26,6 @@ public class CashierPage extends Page {
 
 	private JTextField productCodeField = new JTextField("Product code");
 	private JButton    signoutButton    = new JButton("Sign out", 40);
-
-	private JLabel timeLabel = new JLabel("01-01-2000 00:00:00");
 	
 	public CashierPage(User user) {
 		super(user);

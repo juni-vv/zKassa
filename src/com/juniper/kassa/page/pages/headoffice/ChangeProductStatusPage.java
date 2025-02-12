@@ -32,7 +32,6 @@ public class ChangeProductStatusPage extends Page {
 
 	private JLabel titleLabel    = new JLabel("Set activity status for:");
 	private JLabel subtitleLabel = new JLabel("{productInfo}");
-	private JLabel timeLabel     = new JLabel("01-01-2000 00:00:00");
 
 	private AdvancedProductInfo productInfo;
 

@@ -28,8 +28,6 @@ public class AddCategoryPage extends Page {
 	private JButton backButton   = new JButton("Back", 40);
 	private JButton createButton = new JButton("Create category", 15);
 
-	private JLabel timeLabel = new JLabel("01-01-2000 00:00:00");
-
 	private JTextField categoryNameField = new JTextField();
 
 	public AddCategoryPage(User user) {

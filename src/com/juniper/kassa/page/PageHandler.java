@@ -1,20 +1,17 @@
 package com.juniper.kassa.page;
 
-import java.awt.CardLayout;
 import java.awt.Toolkit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-
-import com.juniper.kassa.model.User;
 
 public class PageHandler {
 
 	private static JFrame _jFrame;
+	
+	private static Page currentPage = null;
 
 	public static void init() {
 		if(_jFrame == null) {
@@ -26,6 +23,23 @@ public class PageHandler {
 			_jFrame.setUndecorated(true);
 			_jFrame.setLocationRelativeTo(null);
 		}
+		
+		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+		Runnable updateTimeTask = new Runnable() {
+			private long nextExecutionTime = System.currentTimeMillis();
+			
+			@Override
+			public void run() {
+				if(currentPage != null)
+					currentPage.update();
+				
+				nextExecutionTime += 1000;
+				long delay = Math.max(0, nextExecutionTime - System.currentTimeMillis());
+				scheduler.schedule(this, delay, TimeUnit.MILLISECONDS);
+			}
+		};
+		
+		scheduler.execute(updateTimeTask);
 	}
 	
 	public static void openPage(Page page) {
@@ -34,6 +48,9 @@ public class PageHandler {
 		
 		page.open();
 		page.start();
+		page.update();
+		
+		currentPage = page;
 		
 		_jFrame.revalidate();
 		_jFrame.repaint();
@@ -41,6 +58,7 @@ public class PageHandler {
 	
 	public static void closePage(Page page) {
 		page.close();
+		currentPage = null;
 	}
 
 }

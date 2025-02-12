@@ -39,7 +39,6 @@ public class StoreManagementPage extends Page {
 	private JButton staffButton      = new JButton("Staff", 15);
 	private JButton scheduleButton   = new JButton("Schedules", 15);
 
-	private JLabel timeLabel      = new JLabel("01-01-2000 00:00:00");
 	private JLabel productTitle   = new JLabel("{productTitle}");
 	private JLabel productDeposit = new JLabel("{productDeposit}");
 	private JLabel productStatus  = new JLabel("{productStatus}");

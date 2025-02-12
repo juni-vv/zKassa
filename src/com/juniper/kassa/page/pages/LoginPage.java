@@ -32,7 +32,6 @@ public class LoginPage extends Page {
 	private JPanel _jPanel;
 
 	private JLabel titleLabel        = new JLabel("Authentication");
-	private JLabel timeLabel         = new JLabel("01-01-2000 00:00:00");
 	private JLabel accessDeniedLabel = new JLabel("Label");
 
 	private JTextField     usernameField = new JTextField();

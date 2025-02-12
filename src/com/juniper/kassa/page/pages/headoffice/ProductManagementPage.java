@@ -46,7 +46,6 @@ public class ProductManagementPage extends Page {
 	private JButton categoriesButton = new JButton("Manage categories", 15);
 	private JButton addProductButton = new JButton("Add a product", 15);
 
-	private JLabel timeLabel      = new JLabel("01-01-2000 00:00:00");
 	private JLabel productTitle   = new JLabel("{productTitle}");
 	private JLabel productDeposit = new JLabel("{productDeposit}");
 	private JLabel productId      = new JLabel("{productId}");

@@ -99,8 +99,6 @@ public class ProductController {
 			request.useToken(token);
 			
 			HttpResponse<?> response = request.send();
-			System.out.println(response.body());
-			
 			return response.statusCode() == 200;
 		} catch(Exception e) {
 			e.printStackTrace();

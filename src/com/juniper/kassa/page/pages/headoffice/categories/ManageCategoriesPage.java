@@ -131,7 +131,7 @@ public class ManageCategoriesPage extends Page {
 	@Override
 	public void start() {
 		ProductController productController = new ProductController();
-		List<String> catList = productController.getCategoryNames(currentUser.getToken());
+		List<String> catList = productController.getCategoryNames(currentUser.getToken()).stream().sorted().toList();
 		
 		JList<String> catJList = new JList<String>((String[]) catList.toArray(new String[0]));
 		categoriesScrollPane.setViewportView(catJList);

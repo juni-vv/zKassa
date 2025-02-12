@@ -25,11 +25,11 @@ public class AddCategoryPage extends Page {
 
 	private JLabel titleLabel = new JLabel("Add new category");
 
-	private JButton backButton = new JButton("Back", 40);
+	private JButton backButton   = new JButton("Back", 40);
 	private JButton createButton = new JButton("Create category", 15);
 
 	private JLabel timeLabel = new JLabel("01-01-2000 00:00:00");
-	
+
 	private JTextField categoryNameField = new JTextField();
 
 	public AddCategoryPage(User user) {
@@ -63,7 +63,7 @@ public class AddCategoryPage extends Page {
 		backButton.setArmedColor(new Color(237, 237, 237, 200));
 		backButton.setBounds(width - signoutWidth - 10, height - signoutHeight - 10 - timeLabel.getPreferredSize().height, signoutWidth, signoutHeight);
 		backButton.addActionListener((ActionEvent e) -> back());
-		
+
 		categoryNameField.setPreferredSize(new Dimension(400, 50));
 		categoryNameField.setHintText("Category name");
 		categoryNameField.setFont(_defaultFont);
@@ -73,8 +73,8 @@ public class AddCategoryPage extends Page {
 		categoryNameField.setCornerRadius(10);
 		categoryNameField.setBorderColor(new Color(0xEF4550));
 		categoryNameField.addActionListener((ActionEvent e) -> enterName());
-		
-		int fieldsX = width / 2 - categoryNameField.getPreferredSize().width / 2;
+
+		int fieldsX  = width / 2 - categoryNameField.getPreferredSize().width / 2;
 		int catNameY = height / 5 + titleLabel.getPreferredSize().height + 20;
 		categoryNameField.setBounds(fieldsX, catNameY, categoryNameField.getPreferredSize().width, categoryNameField.getPreferredSize().height);
 
@@ -85,40 +85,45 @@ public class AddCategoryPage extends Page {
 		createButton.setColor(new Color(237, 237, 237, 150));
 		createButton.setArmedColor(new Color(237, 237, 237, 200));
 		createButton.addActionListener((ActionEvent e) -> enterName());
-		
+
 		int createButtonY = catNameY + categoryNameField.getPreferredSize().height + 10;
 		createButton.setBounds(fieldsX, createButtonY, createButton.getPreferredSize().width, createButton.getPreferredSize().height);
-		
+
 		_jPanel.add(backButton);
 		_jPanel.add(titleLabel);
 		_jPanel.add(timeLabel);
 		_jPanel.add(categoryNameField);
 		_jPanel.add(createButton);
 	}
-	
+
 	private void enterName() {
 		if(categoryNameField.getText().isBlank()) {
 			OkPopup popup = new OkPopup(this, "Error", "You must specify a name.");
 			popup.show();
-			
+
 			return;
 		}
-		
+
 		YesNoPopup popup = new YesNoPopup(this, "Are you sure?", "Are you sure you want to add this category?");
 		popup.show();
-		
+
 		popup.getResult().thenAccept(confirm -> {
 			if(confirm) {
 				String categoryName = categoryNameField.getText();
-				
-				ProductController pc = new ProductController();
-				boolean success = pc.addCategory(currentUser.getToken(), categoryName);
 
-				PageHandler.closePage(this);
+				ProductController pc      = new ProductController();
+				boolean           success = pc.addCategory(currentUser.getToken(), categoryName);
+
+				if(success)
+					PageHandler.closePage(this);
+				else {
+					OkPopup popup1 = new OkPopup(this, "Error", "Could not add category name");
+					popup1.show();
+				}
 			}
 		});
 	}
-	
+
 	private void back() {
 		PageHandler.closePage(this);
 	}

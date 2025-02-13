@@ -4,12 +4,15 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import com.juniper.kassa.model.User;
 import com.juniper.kassa.model.product.AdvancedProductInfo;
@@ -25,10 +28,14 @@ public class ChangeProductStatusPage extends Page {
 
 	private JPanel _jPanel;
 
-	private JPanel distributionCentersPanel = new JPanel(15);
-	private JScrollPane dcScrollPane = new JScrollPane();
+	private JPanel      distributionCentersPanel = new JPanel(15);
+	private JScrollPane dcScrollPane             = new JScrollPane();
 
 	private JButton backButton = new JButton("Back", 40);
+	private JButton activeButton = new JButton("Active", 15);
+	private JButton passiveButton = new JButton("Passive (D)", 15);
+	private JButton tempButton = new JButton("Passive (T)", 15);
+	private JButton recallButton = new JButton("Recall", 15);
 
 	private JLabel titleLabel    = new JLabel("Set activity status for:");
 	private JLabel subtitleLabel = new JLabel("{productInfo}");
@@ -72,7 +79,7 @@ public class ChangeProductStatusPage extends Page {
 		backButton.setArmedColor(new Color(237, 237, 237, 200));
 		backButton.setBounds(width - signoutWidth - 10, height - signoutHeight - 10 - timeLabel.getPreferredSize().height, signoutWidth, signoutHeight);
 		backButton.addActionListener((ActionEvent e) -> back());
-
+		
 		_jPanel.add(backButton);
 
 		titleLabel.setFont(_subtitleFont);
@@ -90,11 +97,52 @@ public class ChangeProductStatusPage extends Page {
 		int dcScrollWidth = width / 3, dcScrollHeight = height / 3;
 		distributionCentersPanel.setBounds(width / 2 - dcScrollWidth / 2, 10 + subtitleLabel.getBounds().y + subtitleLabel.getBounds().height, dcScrollWidth, dcScrollHeight);
 		dcScrollPane.setBounds(width / 2 - dcScrollWidth / 2 + 5, 15 + subtitleLabel.getBounds().y + subtitleLabel.getBounds().height, dcScrollWidth - 10, dcScrollHeight - 10);
-		
+
 		distributionCentersPanel.setBackground(Color.white);
 		dcScrollPane.setOpaque(false);
 		dcScrollPane.setBorder(null);
 		dcScrollPane.getVerticalScrollBar().setUI(new ModernScrollBarUI());
+		
+		int statusBtnWidth = distributionCentersPanel.getBounds().width / 4 - (30 / 4), statusBtnHeight = 50;
+		activeButton.setPreferredSize(new Dimension(statusBtnWidth, statusBtnHeight));
+		activeButton.setFont(_defaultFont);
+		activeButton.setFocusPainted(false);
+		activeButton.setForeground(Color.WHITE);
+		activeButton.setColor(new Color(237, 237, 237, 150));
+		activeButton.setArmedColor(new Color(237, 237, 237, 200));
+		activeButton.setBounds(distributionCentersPanel.getBounds().x, distributionCentersPanel.getBounds().y + dcScrollHeight + 10, statusBtnWidth, statusBtnHeight);
+		activeButton.setEnabled(false);
+		
+		passiveButton.setPreferredSize(new Dimension(statusBtnWidth, statusBtnHeight));
+		passiveButton.setFont(_defaultFont);
+		passiveButton.setFocusPainted(false);
+		passiveButton.setForeground(Color.WHITE);
+		passiveButton.setColor(new Color(237, 237, 237, 150));
+		passiveButton.setArmedColor(new Color(237, 237, 237, 200));
+		passiveButton.setBounds(activeButton.getBounds().x + statusBtnWidth + 10, distributionCentersPanel.getBounds().y + dcScrollHeight + 10, statusBtnWidth, statusBtnHeight);
+		passiveButton.setEnabled(false);
+		
+		tempButton.setPreferredSize(new Dimension(statusBtnWidth, statusBtnHeight));
+		tempButton.setFont(_defaultFont);
+		tempButton.setFocusPainted(false);
+		tempButton.setForeground(Color.WHITE);
+		tempButton.setColor(new Color(237, 237, 237, 150));
+		tempButton.setArmedColor(new Color(237, 237, 237, 200));
+		tempButton.setBounds(passiveButton.getBounds().x + statusBtnWidth + 10, distributionCentersPanel.getBounds().y + dcScrollHeight + 10, statusBtnWidth, statusBtnHeight);
+		tempButton.setEnabled(false);
+		
+		recallButton.setPreferredSize(new Dimension(statusBtnWidth, statusBtnHeight));
+		recallButton.setFont(_defaultFont);
+		recallButton.setFocusPainted(false);
+		recallButton.setForeground(Color.WHITE);
+		recallButton.setColor(new Color(237, 237, 237, 150));
+		recallButton.setArmedColor(new Color(237, 237, 237, 200));
+		recallButton.setBounds(tempButton.getBounds().x + statusBtnWidth + 10, distributionCentersPanel.getBounds().y + dcScrollHeight + 10, statusBtnWidth, statusBtnHeight);
+		
+		_jPanel.add(activeButton);
+		_jPanel.add(passiveButton);
+		_jPanel.add(tempButton);
+		_jPanel.add(recallButton);
 		
 		_jPanel.add(dcScrollPane);
 		_jPanel.add(distributionCentersPanel);
@@ -103,17 +151,25 @@ public class ChangeProductStatusPage extends Page {
 
 	private void fillDistributionCenters() {
 		DistributionCenterController dcController = new DistributionCenterController();
-		dcController.getDistributionCenterNames(currentUser.getToken());
-		
-		List<String> dcList = new ArrayList<String>(); // TODO: Get from api
-		for(int i = 0; i < 200; i++)
-			dcList.add("Item " + i);
-		
+		Map<String, String>          dcMap        = dcController.getDistributionCenterNames(currentUser.getToken());
+
+		List<String>  dcList  = dcMap.entrySet().stream().map(entry -> entry.getKey() + " - " + entry.getValue()).collect(Collectors.toList());
 		JList<String> dcJList = new JList<String>((String[]) dcList.toArray(new String[0]));
-		
+
+		dcJList.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if(!e.getValueIsAdjusting()) {
+					activeButton.setEnabled(true);
+					passiveButton.setEnabled(true);
+					tempButton.setEnabled(true);
+				}
+			}
+		});
+
 		dcScrollPane.setViewportView(dcJList);
 	}
-	
+
 	private void back() {
 		PageHandler.closePage(this);
 	}

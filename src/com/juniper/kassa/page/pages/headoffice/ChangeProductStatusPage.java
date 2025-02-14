@@ -23,6 +23,7 @@ import com.juniper.kassa.swing.JButton;
 import com.juniper.kassa.swing.JPanel;
 import com.juniper.kassa.swing.ModernScrollBarUI;
 import com.juniper.kassa.swing.custom.Gradient;
+import com.juniper.kassa.swing.custom.YesNoPopup;
 
 public class ChangeProductStatusPage extends Page {
 
@@ -112,6 +113,7 @@ public class ChangeProductStatusPage extends Page {
 		activeButton.setArmedColor(new Color(237, 237, 237, 200));
 		activeButton.setBounds(distributionCentersPanel.getBounds().x, distributionCentersPanel.getBounds().y + dcScrollHeight + 10, statusBtnWidth, statusBtnHeight);
 		activeButton.setEnabled(false);
+		activeButton.addActionListener((e) -> active());
 		
 		passiveButton.setPreferredSize(new Dimension(statusBtnWidth, statusBtnHeight));
 		passiveButton.setFont(_defaultFont);
@@ -121,6 +123,7 @@ public class ChangeProductStatusPage extends Page {
 		passiveButton.setArmedColor(new Color(237, 237, 237, 200));
 		passiveButton.setBounds(activeButton.getBounds().x + statusBtnWidth + 10, distributionCentersPanel.getBounds().y + dcScrollHeight + 10, statusBtnWidth, statusBtnHeight);
 		passiveButton.setEnabled(false);
+		passiveButton.addActionListener((e) -> passive());
 		
 		tempButton.setPreferredSize(new Dimension(statusBtnWidth, statusBtnHeight));
 		tempButton.setFont(_defaultFont);
@@ -130,6 +133,7 @@ public class ChangeProductStatusPage extends Page {
 		tempButton.setArmedColor(new Color(237, 237, 237, 200));
 		tempButton.setBounds(passiveButton.getBounds().x + statusBtnWidth + 10, distributionCentersPanel.getBounds().y + dcScrollHeight + 10, statusBtnWidth, statusBtnHeight);
 		tempButton.setEnabled(false);
+		tempButton.addActionListener((e) -> temporarilyUnavailable());
 		
 		recallButton.setPreferredSize(new Dimension(statusBtnWidth, statusBtnHeight));
 		recallButton.setFont(_defaultFont);
@@ -138,6 +142,7 @@ public class ChangeProductStatusPage extends Page {
 		recallButton.setColor(new Color(237, 237, 237, 150));
 		recallButton.setArmedColor(new Color(237, 237, 237, 200));
 		recallButton.setBounds(tempButton.getBounds().x + statusBtnWidth + 10, distributionCentersPanel.getBounds().y + dcScrollHeight + 10, statusBtnWidth, statusBtnHeight);
+		recallButton.addActionListener((e) -> recall());
 		
 		_jPanel.add(activeButton);
 		_jPanel.add(passiveButton);
@@ -147,6 +152,50 @@ public class ChangeProductStatusPage extends Page {
 		_jPanel.add(dcScrollPane);
 		_jPanel.add(distributionCentersPanel);
 
+	}
+	
+	public void active() {
+		YesNoPopup popup = new YesNoPopup(this, "Are you sure?", "Are you sure you want to mark this product as \"active\"?");
+		popup.show();
+		
+		popup.getResult().thenAccept(confirm -> {
+			if(confirm) {
+				// Mark active
+			}
+		});
+	}
+	
+	public void passive() {
+		YesNoPopup popup = new YesNoPopup(this, "Are you sure?", "Are you sure you want to mark this product as \"passive\"?");
+		popup.show();
+		
+		popup.getResult().thenAccept(confirm -> {
+			if(confirm) {
+				// Mark passive
+			}
+		});
+	}
+	
+	public void temporarilyUnavailable() {
+		YesNoPopup popup = new YesNoPopup(this, "Are you sure?", "Are you sure you want to mark this product as \"temporarily passive\"?");
+		popup.show();
+		
+		popup.getResult().thenAccept(confirm -> {
+			if(confirm) {
+				// Mark temppassive
+			}
+		});
+	}
+	
+	public void recall() {
+		YesNoPopup popup = new YesNoPopup(this, "Are you sure?", "Are you sure you want to recall this product?\nThis applies for all distribution centers.");
+		popup.show();
+		
+		popup.getResult().thenAccept(confirm -> {
+			if(confirm) {
+				// Mark recall
+			}
+		});
 	}
 
 	private void fillDistributionCenters() {
